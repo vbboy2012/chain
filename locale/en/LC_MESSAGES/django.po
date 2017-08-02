@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-01 21:03+0800\n"
+"POT-Creation-Date: 2017-08-02 10:53+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: chain/settings.py:127
+#: .\chain\settings.py:127
 msgid "English"
-msgstr "英文"
+msgstr "英语"
 
-#: chain/settings.py:128
+#: .\chain\settings.py:128
 msgid "Simplified Chinese"
-msgstr ""
+msgstr "简体中文"
 
-#: ise/templates/base.html:8
-msgid "博客"
-msgstr "blog"
+#: .\ise\templates\base.html:8
+msgid "ISEChain"
+msgstr "ISEChain"
+
+#: .\ise\templates\common\header.html:11
+msgid "主页"
+msgstr "Home"
+
+#: .\ise\templates\common\header.html:12
+msgid "关于ISE"
+msgstr "About ISE"
+
+#: .\ise\templates\common\header.html:13
+msgid "白皮书"
+msgstr "While Pager"
+
+#: .\ise\templates\common\header.html:14
+msgid "团队"
+msgstr "Team"
+
+#: .\ise\templates\common\header.html:15
+msgid "FAQ"
+msgstr "FAQ"
+
+#: .\ise\templates\common\header.html:16
+msgid "ICO"
+msgstr "ICO"
+
+#: .\ise\templates\common\header.html:17
+msgid "英语"
+msgstr "English"

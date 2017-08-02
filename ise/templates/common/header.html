@@ -1,4 +1,6 @@
 {% load staticfiles %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <header class="header" id="jump">
   <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -7,15 +9,30 @@
         <a class="navbar-brand" href="#"><img src="{% static 'images/Logo.png' %}" alt="" /></a> </div>
       <div class="collapse navbar-collapse hidden-xs">
         <ul class="nav navbar-nav navbar-right">
-          <li class="active"><a href="#jump0">Home</a></li>
-          <li><a href="#jump1">Services</a></li>
-          <li><a href="#jump2">Portfolio</a></li>
-          <li><a href="#jump3">Pricing</a></li>
-          <li><a href="#jump4">Our Team</a></li>
-          <li><a href="#jump5">Testimonials</a></li>
-          <li><a href="#jump6">Contact Us</a></li>
+          <li class="active"><a href="#jump0">{% trans '主页'%}</a></li>
+          <li><a href="#jump1">{% trans '关于ISE'%}</a></li>
+          <li><a href="#jump2">{% trans '白皮书'%}</a></li>
+          <li><a href="#jump3">{% trans '团队'%}</a></li>
+          <li><a href="#jump4">{% trans 'FAQ'%}</a></li>
+          <li><a href="#jump5">{% trans 'ICO'%}</a></li>
+          <li>
+              {% if LANGUAGE_CODE == "en" %}
+                  <a href="javascript:;" onclick="changeLang()">中文</a>
+              {% elif LANGUAGE_CODE == "zh-hans" %}
+                  <a href="javascript:;" onclick="changeLang()">English</a>
+              {% endif %}
+          </li>
         </ul>
       </div>
+        <form action="{% url 'set_language' %}" method="post" id="langForm">{% csrf_token %}
+            <input name="next" type="hidden" value="{{ redirect_to }}" />
+            {% if LANGUAGE_CODE == "en" %}
+                <input name="language" type="hidden" value="zh-hans" />
+            {% elif LANGUAGE_CODE == "zh-hans" %}
+                <input name="language" type="hidden" value="en" />
+            {% endif %}
+            <input type="submit" name="argsubmit" style="display:none"/>
+        </form>
       <!-- /.navbar-collapse -->
 
       <div class="collapse navbar-responsive-collapse">
