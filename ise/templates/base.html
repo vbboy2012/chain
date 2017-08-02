@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% load i18n %}
 <!DOCTYPE html>
 <html>
@@ -22,8 +23,8 @@
       <div class="centered">
         <div class="container">
           <div class="section-headlines">
-            <h1>Portefeuille - Free One Page Website Template</h1>
-            <p>Innovative & Modern Template. Responsive, One Page, Bootstrap3.</p>
+            <h1> Information sharing economy</h1>
+            <p>{% trans '一个面向全球的价值信息共享经济体区块链应用平台'%}</p>
           </div>
           <a href="#jump2" class="btn btn-outline btn-lg"> Our Portfolio </a> &nbsp; <a href="#jump6" class="btn btn-outline btn-lg"> Hire Us </a> </div>
       </div>
@@ -50,11 +51,11 @@
 <div class="section type-2">
   <div class="container">
     <div class="section-headlines">
-      <h4>Our Services</h4>
+      <h4>我们能做什么？</h4>
       <div> We love creating innovative strategies for the web. All kind of brands hire us: we make difficult things easy, but never take anything lightly. </div>
     </div>
     <div class="row">
-      <div class="col-lg-6 features text-center"> <img src="images/pic3-450x410.png" alt="" /> </div>
+      <div class="col-lg-6 features text-center"> <img src="{% static 'images/pic3-450x410.png' %}" alt="" /> </div>
       <div class="col-lg-6 features">
         <div class="media"> <i class=" icon-wrench pull-left animated bounce"></i>
           <div class="media-body">
@@ -192,7 +193,7 @@
     <ul id="Grid" class="unstyled">
       <li class="mix phone">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-1.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-1.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -204,7 +205,7 @@
       </li>
       <li class="mix tablet">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-2.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-2.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -216,7 +217,7 @@
       </li>
       <li class="mix desktop">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-3.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-3.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -228,7 +229,7 @@
       </li>
       <li class="mix tablet">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-4.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-4.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -240,7 +241,7 @@
       </li>
       <li class="mix tablet">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-5.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-5.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -252,7 +253,7 @@
       </li>
       <li class="mix tablet">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-6.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-6.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -264,7 +265,7 @@
       </li>
       <li class="mix tablet">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-7.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-7.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -276,7 +277,7 @@
       </li>
       <li class="mix phone">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-8.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-8.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -288,7 +289,7 @@
       </li>
       <li class="mix tablet">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-9.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-9.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>
@@ -300,7 +301,7 @@
       </li>
       <li class="mix desktop">
         <div>
-          <div class="media-thumb"> <img src="images/portfolio/place-10.jpg">
+          <div class="media-thumb"> <img src="{% static 'images/portfolio/place-10.jpg' %}">
             <div class="media-desc">
               <div>
                 <p><b>A Project</b></p>

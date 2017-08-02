@@ -18,7 +18,7 @@ from django.contrib import admin
 from ise import views as ise_views
 
 urlpatterns = [
-    url(r'^$',ise_views.index),
+    url(r'^$',ise_views.index,name='index'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^admin/', admin.site.urls),
 ]
