@@ -13,9 +13,14 @@
 <script src="{% static 'scripts/Chart.bundle.js' %}"></script>
 <script src="{% static 'scripts/theme.js' %}"></script>
 <script>
-    $('.nav-tabs a').click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
+    $('#register').click(function () {
+        location.href = '/register';
+    })
+    $('#login').click(function () {
+        location.href = '/login';
+    })
+    $('#home').click(function () {
+        location.href = '/';
     })
     function changeLang() {
         document.getElementById("langForm").submit();
@@ -44,8 +49,8 @@
                     50,
                     20,
                     10,
-                    10,
-                    10,
+                    5,
+                    15,
                 ],
                 backgroundColor: [
                     window.chartColors.red,
