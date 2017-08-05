@@ -18,14 +18,14 @@ def register(request):
                 result = '用户名已经存在'
                 return JsonResponse(result,safe=False)
             elif len(User.objects.filter(email=cd['email'])):
-                return HttpResponse('email is have')
+                return JsonResponse('email is have')
             else:
                 user = User.objects.create_user(username=cd['username'], password=cd['password1'], email=cd['email'])
                 user.save()
                 return HttpResponse('Register successfully')
     else:
         form = LoginForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'index.html', {'form': form})
 
 def login(request):
     if request.method == 'POST':
@@ -37,17 +37,17 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth_login(request, user)
-                    return HttpResponseRedirect('/')
+                    return JsonResponse('登录成功',safe=False)
                 else:
-                    return HttpResponse('Disabled account')
+                    return JsonResponse('登录失败', safe=False)
             else:
-                return HttpResponse('no account')
+                return JsonResponse('账号或密码错误', safe=False)
         else:
-            return HttpResponse('Invalid login')
+            return JsonResponse('验证失败', safe=False)
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+        return render(request, 'index.html', {'form': form})
 
 def logout(request):
     auto_logout(request)
-    return HttpResponseRedirect('/login')
+    return render(request, 'index.html')

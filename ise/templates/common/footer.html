@@ -13,15 +13,32 @@
 <script src="{% static 'scripts/Chart.bundle.js' %}"></script>
 <script src="{% static 'scripts/theme.js' %}"></script>
 <script>
-    $('#register').click(function () {
-        location.href = '/register';
+    $('#change').click(function () {
+        $("#login-div").hide();
+        $("#signup-div").show();
     })
-    $('#login').click(function () {
-        location.href = '/login';
+    $('#change2').click(function () {
+        $("#login-div").show();
+        $("#signup-div").hide();
     })
-    $('#home').click(function () {
-        location.href = '/';
+
+    $("#loginBtn").click(function () {
+        var data = $("#login-form").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'login' %}",
+            data: data,
+            success: function (result) {
+                alert(result);
+            },
+        });
     })
+
+    function logout() {
+        location.href = '/logout';
+    }
+
+
     function changeLang() {
         document.getElementById("langForm").submit();
     }

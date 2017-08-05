@@ -308,33 +308,50 @@
   <div class="container">
     <div class="section-headlines">
       <h4>
-      Contact Us
+      用户中心
       </h4>
       <h2>Let's have a coffee</h2>
     </div>
-
     <div class="row">
-    <div class="col-lg-7 col-lg-offset-3">
-    <form role="form" action="" method="post" role="form" id="contac_form" name="contact_form">
+    <div class="col-lg-8 col-lg-offset-4">
+    <div id="login-div">
+        <form id="login-form">
+        {% csrf_token %}
       <div class="form-group">
         <div class="row">
           <div class="col-lg-6">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Your Name *">
+            <input type="text" class="form-control" id="email" name="username" placeholder="Your email *">
             <br class="gap-15"/>
-          </div>
-          <div class="col-lg-6">
-            <input type="text" class="form-control" id="email" name="email" placeholder="Your Email *">
+            <input type="text" class="form-control" id="pass" name="password" placeholder="Your Password *">
+              <br class="gap-15"/>
+              <button type="button" id="loginBtn" class="btn btn-block btn-success">Login </button>
+              <br class="gap-15"/>
+              <a id="change" href="javascript:;">还没账号？点击注册</a>
           </div>
         </div>
       </div>
-      <div class="form-group">
-        <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject">
-      </div>
-      <div class="form-group">
-        <textarea class="form-control" id="message" name="message" rows="8"></textarea>
-      </div>
-      <button id="button-send" class="btn btn-block btn-success">Send Message Now </button>
     </form>
+    </div>
+    <div id="signup-div" style="display: none;">
+        <form role="form" action="" id="signup-form">
+        {% csrf_token %}
+      <div class="form-group">
+        <div class="row">
+          <div class="col-lg-6">
+            <input type="text" class="form-control" id="email" name="username" placeholder="Your email *">
+            <br class="gap-15"/>
+            <input type="text" class="form-control" id="pass" name="password" placeholder="Your Password *">
+              <br class="gap-15"/>
+            <input type="text" class="form-control" id="pass2" name="password2" placeholder="Repeat Your Password *">
+              <br class="gap-15"/>
+              <button id="signup-send" class="btn btn-block btn-success">Signup </button>
+              <br class="gap-15"/>
+              <a id="change2" href="javascript:;">已经有账号？点击登录</a>
+          </div>
+        </div>
+      </div>
+    </form>
+    </div>
 	<div id="success">Your message has been successfully!</div>
 	<div id="error">Unable to send your message, please try later.</div>
   </div>
