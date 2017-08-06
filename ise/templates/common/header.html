@@ -23,7 +23,7 @@
               {% endif %}
           </li>
           {% if request.user.is_authenticated %}
-              <li><a href="#" onclick="logout()">{% trans '退出'%}</a></li>
+              <li><a href="#" onclick="logout()">[{{ request.user.username }}]{% trans '退出'%}</a></li>
             {% else %}
               <li><a href="#jump6">{% trans '登录'%}</a></li>
             {% endif %}

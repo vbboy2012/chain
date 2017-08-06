@@ -2,7 +2,9 @@ from django.shortcuts import render
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login as auth_login,logout as auto_logout
 from django.contrib.auth.models import User
+from .models import UserAddress
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
+from bitcoinrpc.authproxy import AuthServiceProxy,JSONRPCException
 
 # Create your views here.
 
@@ -15,14 +17,14 @@ def register(request):
         if form.is_valid():
             cd = form.cleaned_data
             if len(User.objects.filter(username=cd['username'])):
-                result = '用户名已经存在'
+                result = '1'
                 return JsonResponse(result,safe=False)
-            elif len(User.objects.filter(email=cd['email'])):
-                return JsonResponse('email is have')
             else:
-                user = User.objects.create_user(username=cd['username'], password=cd['password1'], email=cd['email'])
+                user = User.objects.create_user(username=cd['username'], password=cd['password1'])
                 user.save()
-                return HttpResponse('Register successfully')
+                #Login
+                auth_login(request, user)
+                return JsonResponse('2',safe=False)
     else:
         form = LoginForm()
     return render(request, 'index.html', {'form': form})
@@ -37,17 +39,36 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth_login(request, user)
-                    return JsonResponse('登录成功',safe=False)
+                    return JsonResponse('1',safe=False)
                 else:
-                    return JsonResponse('登录失败', safe=False)
+                    return JsonResponse('2', safe=False)
             else:
-                return JsonResponse('账号或密码错误', safe=False)
+                return JsonResponse('3', safe=False)
         else:
-            return JsonResponse('验证失败', safe=False)
+            return JsonResponse('4', safe=False)
     else:
         form = LoginForm()
         return render(request, 'index.html', {'form': form})
 
 def logout(request):
     auto_logout(request)
-    return render(request, 'index.html')
+    return HttpResponseRedirect('/')
+
+def showinfo(request):
+    if request.method == 'POST':
+        result = UserAddress.objects.filter(uid=request.user.id)
+        if result:
+            return JsonResponse('1', safe=False)
+        else:
+            rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@127.0.0.1:8332")
+            address = rpc_connection.getnewaddress(request.user.username)
+            UserAddress.objects.create(uid=request.user.id, type=1, addr=address, money=0, status=1)
+            return JsonResponse('2', safe=False)
+    else:
+        return JsonResponse('0', safe=False)
+
+def bitcoinrpc(request):
+    rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@127.0.0.1:8332")
+    address = rpc_connection.getnewaddress(request.user.username)
+    UserAddress.objects.create(uid=request.user.id,type=1,addr=address,money=0,status=1)
+    return JsonResponse(address,safe=False)

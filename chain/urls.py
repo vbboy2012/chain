@@ -20,6 +20,8 @@ from ise import views as ise_views
 urlpatterns = [
     url(r'^$',ise_views.index,name='index'),
     url(r'^register/', ise_views.register, name='register'),
+    url(r'^showinfo/', ise_views.showinfo, name='showinfo'),
+    url(r'^bitcoinrpc/', ise_views.bitcoinrpc, name='bitcoinrpc'),
     url(r'^login/', ise_views.login, name='login'),
     url(r'^logout/', ise_views.logout, name='logout'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
