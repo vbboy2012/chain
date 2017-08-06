@@ -22,7 +22,11 @@
         $("#signup-div").hide();
     })
     $("#join-us").click(function () {
-        $("#login-div").show();
+        var status = $("#join-status").val();
+        if (status == 1){
+            $("#login-div").show();
+            $("#join-status").val("2");
+        }
     })
 
     $("#loginBtn").click(function () {

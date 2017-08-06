@@ -60,7 +60,7 @@ def showinfo(request):
         if result:
             return JsonResponse('1', safe=False)
         else:
-            rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@127.0.0.1:8332")
+            rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
             address = rpc_connection.getnewaddress(request.user.username)
             UserAddress.objects.create(uid=request.user.id, type=1, addr=address, money=0, status=1)
             return JsonResponse('2', safe=False)
@@ -68,7 +68,7 @@ def showinfo(request):
         return JsonResponse('0', safe=False)
 
 def bitcoinrpc(request):
-    rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@127.0.0.1:8332")
+    rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
     address = rpc_connection.getnewaddress(request.user.username)
     UserAddress.objects.create(uid=request.user.id,type=1,addr=address,money=0,status=1)
     return JsonResponse(address,safe=False)
