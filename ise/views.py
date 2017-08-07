@@ -2,14 +2,26 @@ from django.shortcuts import render
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login as auth_login,logout as auto_logout
 from django.contrib.auth.models import User
-from .models import UserAddress
+from .models import UserAddress,CoinLog
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 from bitcoinrpc.authproxy import AuthServiceProxy,JSONRPCException
+import json
 
 # Create your views here.
 
 def index(request):
-    return render(request,'index.html')
+    if request.user.is_authenticated:
+        result = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)[:1]
+        result2 = UserAddress.objects.filter(uid=request.user.id).filter(yt=2)[:1]
+        czList = CoinLog.objects.filter(uid=request.user.id).filter(type=1)
+        tbList = CoinLog.objects.filter(uid=request.user.id).filter(type=2)
+        if not result:
+            status = 0
+        else:
+            status = 1
+        return render(request, 'index.html', {'status': status, 'czdz': result, 'tbdz': result2,'czList': czList, 'tbList': tbList})
+    else:
+        return render(request,'index.html')
 
 def register(request):
     if request.method == 'POST':
@@ -56,14 +68,10 @@ def logout(request):
 
 def showinfo(request):
     if request.method == 'POST':
-        result = UserAddress.objects.filter(uid=request.user.id)
-        if result:
-            return JsonResponse('1', safe=False)
-        else:
-            rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
-            address = rpc_connection.getnewaddress(request.user.username)
-            UserAddress.objects.create(uid=request.user.id, type=1, addr=address, money=0, status=1)
-            return JsonResponse('2', safe=False)
+        rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
+        address = rpc_connection.getnewaddress(request.user.username)
+        UserAddress.objects.create(uid=request.user.id, type=1,yt=1, addr=address, money=0, status=1)
+        return JsonResponse('1', safe=False)
     else:
         return JsonResponse('0', safe=False)
 
@@ -72,3 +80,7 @@ def bitcoinrpc(request):
     address = rpc_connection.getnewaddress(request.user.username)
     UserAddress.objects.create(uid=request.user.id,type=1,addr=address,money=0,status=1)
     return JsonResponse(address,safe=False)
+
+def test(request):
+    result = UserAddress.objects.filter(uid=request.user.id)[:1]
+    return render(request,'test.html',{'dataList':result})

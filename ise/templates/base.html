@@ -38,11 +38,162 @@
  <div class="section type-1 section-contact">
   <div class="container">
       {% if request.user.is_authenticated %}
+          {% if status == 0 %}
         <div class="section-headlines">
             <h4>欢迎您：{{ request.user.username }}</h4>
-            <h2><a href="javascript:;" id="show-info" class="btn btn-outline btn-lg"> 显示个人信息 </a></h2>
+            <h2><button class="btn btn-lg btn-warning" id="show-info">显示个人信息</button></h2>
         </div>
+              {% elif status == 1 %}
+              <div class="section-headlines">
+              <h4>欢迎您：{{ request.user.username }}</h4>
+        <div class="panel-group" id="accordion">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion"
+				   href="#collapseOne">
+					账户管理
+				</a>
+			</h4>
+		</div>
+		<div id="collapseOne" class="panel-collapse collapse in">
+			<div class="panel-body">
+                <div class="bs-example" data-example-id="table-within-panel">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-body">
+        <div class="alert alert-success" role="alert">您的邮箱还没有验证!<a href="javascript:;">马上验证邮箱！</a></div>
+      </div>
 
+      <!-- Table -->
+      <table class="table" style="text-align: left">
+        <tbody>
+          <tr>
+            <td>BTC账户</td>
+            <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
+            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}</td>
+          </tr>
+          <tr>
+            <td>SEC账户</td>
+            <td>暂未开放</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion"
+				   href="#collapseThree">
+					资金充值
+				</a>
+			</h4>
+		</div>
+		<div id="collapseThree" class="panel-collapse collapse">
+			<div class="panel-body">
+                <div class="bs-example" data-example-id="table-within-panel">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-body">
+        <div class="alert alert-success" role="alert">BTC充值地址：{% for data in czdz%}{{ data.addr }}{% endfor %}</div>
+      </div>
+        <div class="panel-heading">充值记录</div>
+        {% if czList %}
+      <!-- Table -->
+      <table class="table" style="text-align: left">
+        <thead>
+          <tr>
+            <th>充值地址</th>
+            <th>充值金额</th>
+            <th>更新时间</th>
+            <th>充值状态</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for data in czList%}
+            <tr>
+            <td>{{ data.addr }}</td>
+            <td>{{ data.money }}</td>
+            <td>{{ data.create_time }}</td>
+            <td>{% if data.status == 1 %}充值成功{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+            {% else %}
+            暂无记录
+            {% endif %}
+    </div>
+  </div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-warning">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion"
+				   href="#collapseFour">
+					资金提现
+				</a>
+			</h4>
+		</div>
+		<div id="collapseFour" class="panel-collapse collapse">
+			<div class="panel-body">
+				<div class="bs-example" data-example-id="table-within-panel">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-body">
+      <form class="form-inline">
+  <div class="form-group">
+    <label for="exampleInputName2">Name</label>
+    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail2">Email</label>
+    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">
+  </div>
+  <button type="submit" class="btn btn-default">Send invitation</button>
+</form>
+      </div>
+        <div class="panel-heading">提现记录</div>
+      <!-- Table -->
+      <table class="table" style="text-align: left">
+        <thead>
+          <tr>
+            <th>提现时间</th>
+            <th>提现金额</th>
+            <th>网络手续费</th>
+            <th>提现地址</th>
+            <th>提现状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for data in tbList%}
+            <tr>
+            <td>{{ data.create_time }}</td>
+            <td>{{ data.money }}</td>
+            <td>{{ data.fee }}</td>
+            <td>{{ data.addr }}</td>
+            <td>{% if data.status == 1 %}提币成功{% elif data.status == 0 %}审核中{% elif data.status == 2 %}已取消{% endif %}</td>
+            <td>{% if data.status == 0 %}<a href="#">取消</a>{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+			</div>
+		</div>
+	</div>
+</div>
+        </div>
+            {% endif %}
       {% else %}
     <div class="section-headlines">
       <h4>

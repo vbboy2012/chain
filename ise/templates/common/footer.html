@@ -90,9 +90,8 @@
             type: 'POST',
             url: "{% url 'showinfo' %}",
             success: function (result) {
-                alert(result);
                 if (result == "1"){
-                    alert("用户邮箱已经存在！")
+                    location.href = '/';
                 }
                 else if(result == "0"){
                     location.href = '/';
