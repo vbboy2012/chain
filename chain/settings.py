@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DOMAIN = 'http://127.0.0.1:8000'
+
 
 # Application definition
 
@@ -41,6 +43,8 @@ INSTALLED_APPS = [
 
     'ise',
 ]
+
+AUTH_USER_MODEL = 'ise.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -140,3 +144,10 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_HOST_USER = 'vbboy2012@163.com'
+EMAIL_HOST_PASSWORD = 'z35580113'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False

@@ -6,6 +6,66 @@
     </div>
   </div>
 </footer>
+<div class="modal fade" id="setpassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">设置资金密码</h4>
+      </div>
+      <div class="modal-body">
+        <form id="setpass-form">
+            {% csrf_token %}
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">密码:</label>
+            <input type="password" class="form-control" id="safepass1" name="safepass1">
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">确认密码:</label>
+            <input type="password" class="form-control" id="safepass2" name="safepass2">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="setpass">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="changepassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">更改密码</h4>
+      </div>
+      <div class="modal-body">
+        <form id="changesp-form">
+            {% csrf_token %}
+            <input type="hidden" value="0" name="type" id="changeType">
+            <div class="form-group">
+            <label for="recipient-name" class="control-label">原始密码:</label>
+            <input type="password" class="form-control" id="oldpass" name="oldpass">
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">新密码:</label>
+            <input type="password" class="form-control" id="newpass1" name="newpass1">
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">确认密码:</label>
+            <input type="password" class="form-control" id="newpass2" name="newpass2">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="changesp">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="{% static 'scripts/jquery-1.10.2.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'scripts/jquery.smooth-scroll.min.js' %}"></script>
@@ -13,6 +73,12 @@
 <script src="{% static 'scripts/Chart.bundle.js' %}"></script>
 <script src="{% static 'scripts/theme.js' %}"></script>
 <script>
+    $('.changesp').click(function () {
+        $("#changeType").val("2");
+    })
+    $('.changep').click(function () {
+        $("#changeType").val("1");
+    })
     $('#change').click(function () {
         $("#login-div").hide();
         $("#signup-div").show();
@@ -82,6 +148,71 @@
             },
         });
     })
+    $("#setpass").click(function () {
+        var pass1 = $("#safepass1").val();
+        var pass2 = $("#safepass2").val();
+        if(pass1 != pass2){
+            alert("两次密码输入不一样,请重新输入!");
+            return false;
+        }
+        var data = $("#setpass-form").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'setsafepass' %}",
+            data: data,
+            success: function (result) {
+                if (result == "1"){
+                    alert("设置成功");
+                    location.href = '/';
+                }
+                else if(result == "0"){
+                    location.href = '/';
+                }
+            },
+        });
+    })
+    $("#changesp").click(function () {
+        var oldpass = $("#oldpass").val();
+        if (oldpass == ""){
+            alert("请输入原始密码!");
+            return false;
+        }
+        var pass1 = $("#newpass1").val();
+        if(pass1 == ""){
+            alert("请输入新密码!");
+            return false;
+        }
+        var pass2 = $("#newpass2").val();
+        if(pass2 == ""){
+            alert("请输入确认密码!");
+            return false;
+        }
+        if(pass1 != pass2){
+            alert("两次密码输入不一样,请重新输入!");
+            return false;
+        }
+        var data = $("#changesp-form").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'changepass' %}",
+            data: data,
+            success: function (result) {
+                if (result == "2"){
+                    alert("原始密码不正确");
+                }
+                else if (result == "1"){
+                    alert("更改成功");
+                    location.href = '/';
+                }
+                else if(result == "0"){
+                    location.href = '/';
+                }
+                else if(result == "3"){
+                    alert("未知错误");
+                }
+            },
+        });
+    })
     $.ajaxSetup({
         data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
@@ -104,10 +235,10 @@
         location.href = '/logout';
     }
 
-
     function changeLang() {
         document.getElementById("langForm").submit();
     }
+
 </script>
 <script>
     var randomScalingFactor = function() {

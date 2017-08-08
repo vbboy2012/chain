@@ -62,12 +62,22 @@
     <div class="panel panel-default">
       <!-- Default panel contents -->
       <div class="panel-body">
-        <div class="alert alert-success" role="alert">您的邮箱还没有验证!<a href="javascript:;">马上验证邮箱！</a></div>
+        <div class="alert alert-success" role="alert">为确保账户安全请及时设置资金密码！</div>
       </div>
 
       <!-- Table -->
       <table class="table" style="text-align: left">
         <tbody>
+          <tr>
+            <td>邮箱账户</td>
+            <td>{% if userinfo.checkEmail == 0 %}<span class="icon-remove"></span>{% elif userinfo.checkEmail == 1 %}<span class="icon-ok"></span>{% endif %}</td>
+            <td><a href="javascript:;">验证邮箱</a>&nbsp;<a href="javascript:;" class="changep" data-toggle="modal" data-target="#changepassModal">更改密码</a></td>
+          </tr>
+          <tr>
+            <td>资金密码</td>
+            <td>{% if not userinfo.safe_password %}<span class="icon-remove"></span>{% else %}<span class="icon-ok"></span>{% endif %}</td>
+            <td>{% if not userinfo.safe_password %}<a href="javascript:;" data-toggle="modal" data-target="#setpassModal">设置资金密码</a>{% else %}<a href="javascript:;" class="changesp" data-toggle="modal" data-target="#changepassModal">更改资金密码</a>{% endif %}</td>
+          </tr>
           <tr>
             <td>BTC账户</td>
             <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
