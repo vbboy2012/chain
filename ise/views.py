@@ -8,23 +8,24 @@ from bitcoinrpc.authproxy import AuthServiceProxy,JSONRPCException
 from django.core.mail import send_mail
 from .Token import Token
 from django.conf import settings as django_settings
+import random
 
 # Create your views here.
 token_confirm = Token(django_settings.SECRET_KEY)
 def index(request):
     if request.user.is_authenticated:
-        result = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)[:1]
-        result2 = UserAddress.objects.filter(uid=request.user.id).filter(yt=2)[:1]
+        czdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)[:1]
+        tbdzList = UserAddress.objects.filter(uid=request.user.id).filter(yt=2)
         czList = CoinLog.objects.filter(uid=request.user.id).filter(type=1)
         tbList = CoinLog.objects.filter(uid=request.user.id).filter(type=2)
         userinfo = User.objects.get(id=request.user.id)
-        if not result:
+        if not czdz:
             status = 0
         else:
             status = 1
-        return render(request, 'index.html', {'status': status, 'czdz': result, 'tbdz': result2,'czList': czList, 'tbList': tbList, 'userinfo': userinfo})
+        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo})
     else:
-        return render(request,'index.html')
+        return render(request, 'index.html')
 
 def register(request):
     if request.method == 'POST':
@@ -38,9 +39,9 @@ def register(request):
                 user = User.objects.create_user(username=cd['username'], password=cd['password1'])
                 user.save()
                 token = token_confirm.generate_validate_token(cd['username'])
-                message = "\n".join([u'{0},欢迎加入我的博客'.format(cd['username']), u'请访问该链接，完成用户验证:',
+                message = "\n".join([u'{0},欢迎加入RISE'.format(cd['username']), u'请访问该链接，完成用户验证:',
                                      '/'.join([django_settings.DOMAIN, 'activate', token])])
-                send_mail('RISEChain共享经济体用户注册验证!', message, 'vbboy2012@163.com', [cd['username']], fail_silently=False)
+                send_mail('RISEChain用户注册验证!', message, 'vbboy2012@163.com', [cd['username']], fail_silently=False)
                 #Login
                 auth_login(request, user)
                 return JsonResponse('2', safe=False)
@@ -69,24 +70,68 @@ def login(request):
         form = LoginForm()
         return render(request, 'index.html', {'form': form})
 
+def logout(request):
+    auto_logout(request)
+    return HttpResponseRedirect('/')
+
 def active_user(request, token):
     try:
         username = token_confirm.confirm_validate_token(token)
     except:
-        token_confirm.remove_validate_token(token)
-        return render(request, 'message.html', {'message': u"对不起，验证链接已经超时，请重新发送邮件"})
+        return render(request, 'message.html', {'message': 1})
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
-        return render(request, 'message.html', {'message': u"对不起，您所验证的用户不存在，请重新注册"})
+        return render(request, 'message.html', {'message': 2})
     user.checkEmail = True
     user.save()
-    message = u'验证成功！'
-    return render(request, 'message.html', {'message': message})
+    return render(request, 'message.html', {'message': 3})
 
-def logout(request):
-    auto_logout(request)
-    return HttpResponseRedirect('/')
+def checkmail(request):
+    if request.method == 'POST':
+        user = User.objects.get(id=request.user.id)
+        token = token_confirm.generate_validate_token(user.username)
+        message = "\n".join([u'{0},欢迎加入RISE'.format(user.username), u'请访问该链接，完成用户验证:',
+                             '/'.join([django_settings.DOMAIN, 'activate', token])])
+        send_mail('RISEChain用户注册验证!', message, 'vbboy2012@163.com', [user.username], fail_silently=False)
+        return JsonResponse('1', safe=False)
+    else:
+        return JsonResponse('0', safe=False)
+
+def addaddress(request):
+    if request.method == 'POST':
+        pass2 = request.POST['pass2']
+        user = User.objects.get(id=request.user.id)
+        code = request.POST['code']
+        try:
+            tbcode = request.session['tbcode']
+        except KeyError:
+            return JsonResponse('3', safe=False)
+        if code != tbcode:
+            return JsonResponse('3', safe=False)
+        if check_password(pass2, user.safe_password):
+            del request.session['tbcode']
+            type = request.POST['type']
+            address = request.POST['addr']
+            remark = request.POST['remark']
+            UserAddress.objects.create(uid=request.user.id, type=type, yt=2, addr=address, money=0, remark=remark ,status=1)
+            return JsonResponse('1', safe=False)
+        else:
+            return JsonResponse('2', safe=False)
+    else:
+        return JsonResponse('0', safe=False)
+
+def sendcode(request):
+    seed = "1234567890abcdefghijklmnopqrstuvwxyz"
+    sa = []
+    for i in range(4):
+        sa.append(random.choice(seed))
+    salt = ''.join(sa)
+    request.session['tbcode'] = salt
+    user = User.objects.get(id=request.user.id)
+    message = "\n".join([u'您的验证码是：{0}'.format(salt)])
+    send_mail('RISEChain添加提币地址验证!', message, 'vbboy2012@163.com', [user.username], fail_silently=False)
+    return HttpResponse(salt)
 
 def showinfo(request):
     if request.method == 'POST':

@@ -13,7 +13,9 @@
 </head>
 <body id=body onscroll=SetCookie("scroll",body.scrollTop); onload="scrollback();">
 
+{% block header %}
 {% include 'common/header.html' %}
+{% endblock %}
 
 {% block content %}
 <div class="jumper" id="jump0"></div>
@@ -71,7 +73,7 @@
           <tr>
             <td>邮箱账户</td>
             <td>{% if userinfo.checkEmail == 0 %}<span class="icon-remove"></span>{% elif userinfo.checkEmail == 1 %}<span class="icon-ok"></span>{% endif %}</td>
-            <td><a href="javascript:;">验证邮箱</a>&nbsp;<a href="javascript:;" class="changep" data-toggle="modal" data-target="#changepassModal">更改密码</a></td>
+            <td>{% if userinfo.checkEmail == 0 %}<a href="javascript:;" id="checkMail">验证邮箱</a>{% endif %}&nbsp;<a href="javascript:;" class="changep" data-toggle="modal" data-target="#changepassModal">更改密码</a></td>
           </tr>
           <tr>
             <td>资金密码</td>
@@ -80,6 +82,11 @@
           </tr>
           <tr>
             <td>BTC账户</td>
+            <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
+            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}</td>
+          </tr>
+          <tr>
+            <td>ETH账户</td>
             <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
             <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}</td>
           </tr>
@@ -111,6 +118,7 @@
       <!-- Default panel contents -->
       <div class="panel-body">
         <div class="alert alert-success" role="alert">BTC充值地址：{% for data in czdz%}{{ data.addr }}{% endfor %}</div>
+        <div class="alert alert-info" role="alert">ETH充值地址：{% for data in czdz%}{{ data.addr }}{% endfor %}</div>
       </div>
         <div class="panel-heading">充值记录</div>
         {% if czList %}
@@ -158,19 +166,36 @@
     <div class="panel panel-default">
       <!-- Default panel contents -->
       <div class="panel-body">
-      <form class="form-inline">
-  <div class="form-group">
-    <label for="exampleInputName2">Name</label>
-    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputEmail2">Email</label>
-    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">
-  </div>
-  <button type="submit" class="btn btn-default">Send invitation</button>
-</form>
+      <div class="alert alert-success" role="alert">
+          {% if userinfo.checkEmail != 0  and userinfo.safe_password %}
+            <a href="javascript:;" data-toggle="modal" data-target="#addressModal">添加新币址</a>
+          {% else %}
+            请先验证邮箱和设置资金密码
+          {% endif %}
+      </div>
+      <table class="table" style="text-align: left">
+        <thead>
+          <tr>
+            <th>备注名称</th>
+            <th>提币地址</th>
+            <th>币种类型</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for dz in tbdzList%}
+            <tr>
+            <td>{{ dz.remark }}</td>
+            <td>{{ dz.addr }}</td>
+            <td>{% if dz.type == 1 %}BTC{% elif dz.type == 2 %}ETH{% elif dz.type == 3 %}SEC{% endif %}</td>
+            <td><a href="javascript:;">提币</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
       </div>
         <div class="panel-heading">提现记录</div>
+        {% if tbList %}
       <!-- Table -->
       <table class="table" style="text-align: left">
         <thead>
@@ -196,6 +221,9 @@
         {% endfor %}
         </tbody>
       </table>
+            {% else %}
+            暂无记录
+            {% endif %}
     </div>
   </div>
 			</div>
@@ -326,7 +354,7 @@
     </div>
   </div>
 </div>
-<div class="copyrights">Collect from <a href="http://www.cssmoban.com/" >企业网站模板</a></div>
+
 <div id="jump2" class="jumper"></div>
 <!-- Featured Work -->
 <div class="section type-1" style="padding-bottom: 0">
@@ -516,7 +544,8 @@
 
 {% endblock %}
 
+{% block footer %}
 {% include 'common/footer.html' %}
-
+{% endblock %}
 </body>
 </html>

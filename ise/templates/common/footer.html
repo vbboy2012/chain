@@ -66,6 +66,61 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">添加新币址</h4>
+      </div>
+      <div class="modal-body">
+          <form class="form-horizontal" id="address-form">
+              {% csrf_token %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">备注名称:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="remark">
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label">币种:</label>
+            <div class="col-sm-10">
+              <select class="form-control" name="type">
+                  <option value="1">BTC</option>
+                  <option value="2">ETH</option>
+                  <option value="3">SEC</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">提币地址:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="addr">
+            </div>
+          </div>
+           <div class="form-group">
+            <label  class="col-sm-2 control-label">邮箱验证:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="code">
+            </div>
+               <button type="button" class="btn btn-success col-sm-2 form-group" id="sendCode">发送验证码</button>
+          </div>
+           <div class="form-group">
+            <label class="col-sm-2 control-label">资金密码:</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" name="pass2">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="add-address">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="{% static 'scripts/jquery-1.10.2.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'scripts/jquery.smooth-scroll.min.js' %}"></script>
@@ -209,6 +264,59 @@
                 }
                 else if(result == "3"){
                     alert("未知错误");
+                }
+            },
+        });
+    })
+
+    $("#checkMail").click(function () {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'checkmail' %}",
+            success: function (result) {
+                if (result == "1"){
+                    alert("激活邮件发送成功，请登录邮箱进行激活");
+                }
+            },
+        });
+    })
+    $("#sendCode").click(function () {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'sendcode' %}",
+            success: function (result) {
+                if (result == "1"){
+                    alert("验证码发送成功");
+                }
+            },
+        });
+    })
+    $("#add-address").click(function () {
+        var remark = $("input[name='remark']").val();
+        if(remark == ""){
+            alert("请填写备注名称");
+            return false;
+        }
+        var addr = $("input[name='addr']").val();
+        var code = $("input[name='code']").val();
+        var pass2 = $("input[name='pass2']").val();
+        if(addr === "" || code === "" || pass2 === ""){
+            return;
+        }
+        var data = $("#address-form").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'addaddress' %}",
+            data: data,
+            success: function (result) {
+                if (result == "1"){
+                    location.href = '/';
+                    alert("添加成功");
+                }else if(result == "2"){
+                    alert("资金密码错误");
+                }
+                else if(result == "3"){
+                    alert("验证码不正确");
                 }
             },
         });
