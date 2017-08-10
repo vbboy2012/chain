@@ -173,7 +173,7 @@
             请先验证邮箱和设置资金密码
           {% endif %}
       </div>
-      <table class="table" style="text-align: left">
+      <table class="table" style="text-align: left" id="tbdz-table">
         <thead>
           <tr>
             <th>备注名称</th>
@@ -188,7 +188,7 @@
             <td>{{ dz.remark }}</td>
             <td>{{ dz.addr }}</td>
             <td>{% if dz.type == 1 %}BTC{% elif dz.type == 2 %}ETH{% elif dz.type == 3 %}SEC{% endif %}</td>
-            <td><a href="javascript:;">提币</a></td>
+            <td><a href="javascript:;" id="tb" data-toggle="modal" data-target="#tbModal">提币</a></td>
           </tr>
         {% endfor %}
         </tbody>
@@ -507,13 +507,67 @@
 <div id="jump5" class="jumper"></div>
 <!-- Testimonials -->
 <div class="section type-1">
-  <div class="container">
-    <div class="section-headlines">
-      <h4>Testimonials</h4>
-      <h2>Read our clients talking about us!</h2>
-      <div>We worked on digital strategies for 200 brands worldwide. </div>
-    </div>
-  </div>
+<div class="demo">
+		<div class="container">
+            <div class="section-headlines">
+            <h4>ICO时间线</h4>
+        </div>
+		<div class="row">
+		    <div class="col-md-12">
+			    <div class="main-timeline">
+				    <div class="timeline">
+					    <div class="timeline-content">
+							<span class="date">
+									<span class="day">25<sup>th</sup></span>
+									<span class="month">8月</span>
+									<span class="year">2017</span>
+								</span>
+							<h2 class="title">限额阶段<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
+						</div>
+					</div>
+
+				    <div class="timeline">
+					    <div class="timeline-content">
+						    <span class="date">
+									<span class="day">31<sup>th</sup></span>
+									<span class="month">8月</span>
+									<span class="year">2017</span>
+								</span>
+							<h2 class="title">公开ICO(早鸟阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
+						</div>
+					</div>
+
+				    <div class="timeline">
+					    <div class="timeline-content">
+							<span class="date">
+									<span class="day">7<sup>th</sup></span>
+									<span class="month">9月</span>
+									<span class="year">2017</span>
+								</span>
+							<h2 class="title">公开ICO(第二阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
+						</div>
+					</div>
+
+				    <div class="timeline">
+					    <div class="timeline-content">
+						    <span class="date">
+								<span class="day">15<sup>th</sup></span>
+								<span class="month">9月</span>
+								<span class="year">2017</span>
+							</span>
+							<h2 class="title">公开ICO(第三阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
+						</div>
+					</div>
+			    </div>
+			</div>
+		</div>
+		</div>
+	</div>
+
 </div>
 
 <!-- Subscription -->

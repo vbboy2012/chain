@@ -121,6 +121,26 @@ def addaddress(request):
     else:
         return JsonResponse('0', safe=False)
 
+def tibi(request):
+    if request.method == 'POST':
+        pass2 = request.POST['pass2']
+        user = User.objects.get(id=request.user.id)
+        code = request.POST['code']
+        try:
+            tbcode = request.session['tbcode']
+        except KeyError:
+            return JsonResponse('3', safe=False)
+        if code != tbcode:
+            return JsonResponse('3', safe=False)
+        if check_password(pass2, user.safe_password):
+            del request.session['tbcode']
+            #查询账号余额
+            return JsonResponse('1', safe=False)
+        else:
+            return JsonResponse('2', safe=False)
+    else:
+        return JsonResponse('0', safe=False)
+
 def sendcode(request):
     seed = "1234567890abcdefghijklmnopqrstuvwxyz"
     sa = []
@@ -131,7 +151,7 @@ def sendcode(request):
     user = User.objects.get(id=request.user.id)
     message = "\n".join([u'您的验证码是：{0}'.format(salt)])
     send_mail('RISEChain添加提币地址验证!', message, 'vbboy2012@163.com', [user.username], fail_silently=False)
-    return HttpResponse(salt)
+    return JsonResponse('1', safe=False)
 
 def showinfo(request):
     if request.method == 'POST':
@@ -181,8 +201,7 @@ def changepass(request):
 #测试函数
 def bitcoinrpc(request):
     rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
-    address = rpc_connection.getnewaddress(request.user.username)
-    UserAddress.objects.create(uid=request.user.id,type=1,addr=address,money=0,status=1)
+    address = rpc_connection.getbalance()
     return JsonResponse(address,safe=False)
 
 def test(request):
