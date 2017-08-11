@@ -15,8 +15,9 @@ class UserAddress(models.Model):
     type = models.IntegerField()    #1btc，2eth ，3SEC
     yt = models.IntegerField()      #1 充值地址 2 提币地址
     addr = models.CharField(max_length=50)
-    money = models.DecimalField(max_digits=20, decimal_places=8)
-    remark = models.CharField(max_length=50,default='')
+    money = models.DecimalField(max_digits=20, decimal_places=8)        #余额
+    frozen_num = models.DecimalField(max_digits=20, decimal_places=8, default=0)   #冻结数量
+    remark = models.CharField(max_length=50, default='')
     status = models.IntegerField('状态', default=1)  #1启用 0 删除
 
     def __str__(self):

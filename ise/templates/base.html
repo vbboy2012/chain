@@ -83,12 +83,12 @@
           <tr>
             <td>BTC账户</td>
             <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
-            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}</td>
+            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in czdz%}{{ data.frozen_num }}{% endfor %}</td>
           </tr>
           <tr>
             <td>ETH账户</td>
             <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
-            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}</td>
+            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in czdz%}{{ data.frozen_num }}{% endfor %}</td>
           </tr>
           <tr>
             <td>SEC账户</td>
@@ -216,7 +216,7 @@
             <td>{{ data.fee }}</td>
             <td>{{ data.addr }}</td>
             <td>{% if data.status == 1 %}提币成功{% elif data.status == 0 %}审核中{% elif data.status == 2 %}已取消{% endif %}</td>
-            <td>{% if data.status == 0 %}<a href="#">取消</a>{% endif %}</td>
+            <td>{% if data.status == 0 %}<a href="javascript:;" id="cancel-tb">取消</a>{% endif %}</td>
           </tr>
         {% endfor %}
         </tbody>

@@ -123,9 +123,9 @@ def addaddress(request):
 
 def tibi(request):
     if request.method == 'POST':
-        pass2 = request.POST['pass2']
+        pass2 = request.POST['tbpass2']
         user = User.objects.get(id=request.user.id)
-        code = request.POST['code']
+        code = request.POST['tbcode']
         try:
             tbcode = request.session['tbcode']
         except KeyError:
@@ -133,9 +133,33 @@ def tibi(request):
         if code != tbcode:
             return JsonResponse('3', safe=False)
         if check_password(pass2, user.safe_password):
-            del request.session['tbcode']
+            #del request.session['tbcode']
             #查询账号余额
-            return JsonResponse('1', safe=False)
+            tbcount = float(request.POST['tbcount'])
+            tbfee = float(request.POST['tbfee'])
+            # rpc_connection = AuthServiceProxy(
+            #     "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+            #                                 django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+            # rpc_connection.walletpassphrase("z35580113", 60)
+            # balance = rpc_connection.getbalance(user.username)
+            czdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)[:1]
+            balance = 0
+            user_addr = ''
+            for dz in czdz:
+                balance = float(dz.money)
+                user_addr = dz.addr
+            tbcount -= tbfee
+            if balance < tbcount:   #余额小于提币数量
+                return JsonResponse('4', safe=False)
+            else:
+                tbdz = request.POST['tbdz']
+                #扣除提币数量，冻结, 创建提币记录 待审核
+                useraddress = UserAddress.objects.get(addr=user_addr)
+                useraddress.money = balance-(tbcount+tbfee)
+                useraddress.frozen_num = tbcount+tbfee
+                useraddress.save()
+                CoinLog.objects.create(uid=request.user.id, addr=tbdz, type=2, money=tbcount, fee=tbfee)
+                return JsonResponse('1', safe=False)
         else:
             return JsonResponse('2', safe=False)
     else:
@@ -155,7 +179,9 @@ def sendcode(request):
 
 def showinfo(request):
     if request.method == 'POST':
-        rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
+        rpc_connection = AuthServiceProxy(
+            "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+                                        django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
         address = rpc_connection.getnewaddress(request.user.username)
         UserAddress.objects.create(uid=request.user.id, type=1,yt=1, addr=address, money=0, status=1)
         return JsonResponse('1', safe=False)
@@ -199,8 +225,13 @@ def changepass(request):
         return JsonResponse('0', safe=False)
 
 #测试函数
+# walletpassphrase getreceivedbyaddress s
 def bitcoinrpc(request):
-    rpc_connection = AuthServiceProxy("http://vbboy2012:Okfuckyou123@106.14.155.141:8332")
+    rpc_connection = AuthServiceProxy(
+        "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+                                    django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+  #  user = User.objects.get(id=request.user.id)
+    rpc_connection.walletpassphrase("z35580113",51)
     address = rpc_connection.getbalance()
     return JsonResponse(address,safe=False)
 

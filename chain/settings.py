@@ -30,6 +30,11 @@ ALLOWED_HOSTS = []
 
 DOMAIN = 'http://127.0.0.1:8000'
 
+BITCOIN_HOST = '106.14.155.141'
+BITCOIN_PORT = '8332'
+BITCOIN_USER = 'vbboy2012'
+BITCOIN_PASS = 'Okfuckyou123'
+
 
 # Application definition
 

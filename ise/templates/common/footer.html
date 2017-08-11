@@ -135,33 +135,35 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">提币地址:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="tbaddr" name="addr" disabled="true">
+              <input type="text" class="form-control" id="tbaddr" name="tbdz" disabled="true">
+            <input type="hidden" name="tbtype">
+                <label class=" control-label"><span style="color: red;display: none;float: right" id="type-btc">BTC地址</span><span style="color: red;display: none;float: right" id="type-eth">ETH地址</span><span style="color: red;display: none;float: right" id="type-sec">SEC地址</span></label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">提币数量:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="count">
+              <input type="text" class="form-control" name="tbcount">
               <label class=" control-label">可提现最大金额（含手续费）：<span style="color: red;display: none;float: right" id="balance-btc">BTC{% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-eth">ETH{% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-sec">SEC{% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
             </div>
           </div>
            <div class="form-group">
             <label class="col-sm-2 control-label">网络手续费:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="fee" placeholder="">
+              <input type="text" class="form-control" name="tbfee" placeholder="">
             </div>
           </div>
            <div class="form-group">
             <label  class="col-sm-2 control-label">邮箱验证:</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="code">
+              <input type="text" class="form-control" name="tbcode">
             </div>
                <button type="button" class="btn btn-success col-sm-2 form-group sendCode">发送验证码</button>
           </div>
            <div class="form-group">
             <label class="col-sm-2 control-label">资金密码:</label>
             <div class="col-sm-10">
-              <input type="password" class="form-control" name="pass2">
+              <input type="password" class="form-control" name="tbpass2">
             </div>
           </div>
         </form>
@@ -201,17 +203,29 @@
             $("#balance-btc").css('display','block');
             $("#balance-eth").css('display','none');
             $("#balance-sec").css('display','none');
-            $("input[name='fee']").attr("placeholder","网络手续费最低0.01BTC")
+            $("#type-btc").css('display','block');
+            $("#type-eth").css('display','none');
+            $("#type-sec").css('display','none');
+            $("input[name='tbfee']").attr("placeholder","网络手续费最低0.0005BTC");
+            $("input[name='tbtype']").val("1");
         } else if(type == "ETH"){
             $("#balance-btc").css('display','none');
             $("#balance-eth").css('display','block');
             $("#balance-sec").css('display','none');
-            $("input[name='fee']").attr("placeholder","网络手续费最低0.01ETH")
+            $("#type-btc").css('display','none');
+            $("#type-eth").css('display','block');
+            $("#type-sec").css('display','none');
+            $("input[name='tbfee']").attr("placeholder","网络手续费最低0.01ETH");
+            $("input[name='tbtype']").val("2");
         } else if(type == "SEC"){
             $("#balance-btc").css('display','none');
             $("#balance-eth").css('display','none');
             $("#balance-sec").css('display','block');
-            $("input[name='fee']").attr("placeholder","网络手续费最低0.01SEC")
+            $("#type-btc").css('display','none');
+            $("#type-eth").css('display','none');
+            $("#type-sec").css('display','block');
+            $("input[name='tbfee']").attr("placeholder","网络手续费最低0.01SEC");
+            $("input[name='tbtype']").val("3");
         }
         $("#tbaddr").val(addr);
     })
@@ -414,14 +428,28 @@
         });
     })
     $("#tbsubmit").click(function () {
-        var count = $("input[name='count']").val();
-        var fee = $("input[name='fee']").val();
-        var code = $("input[name='code']").val();
-        var pass2 = $("input[name='pass2']").val();
+        var count = $("input[name='tbcount']").val();
+        var fee = $("input[name='tbfee']").val();
+        var code = $("input[name='tbcode']").val();
+        var pass2 = $("input[name='tbpass2']").val();
+        var tbdz = $("input[name='tbdz']").val();
         if(count === "" || fee === "" || code === "" || pass2 === ""){
             return;
         }
+        var type = $("input[name='tbtype']").val();
+        if(type == 1 && fee < 0.0005){
+            alert("网络手续费最低0.0005");
+            return;
+        }else if(type == 2 && fee < 0.01){
+            alert("网络手续费最低0.01");
+            return;
+        }else if(type == 3 && fee < 0.01){
+            alert("网络手续费最低0.01");
+            return;
+        }
+
         var data = $("#tb-form").serialize();
+        data += "&tbdz="+tbdz;
         $.ajax({
             type: 'POST',
             url: "{% url 'tibi' %}",
@@ -435,6 +463,24 @@
                 }
                 else if(result == "3"){
                     alert("验证码不正确");
+                }
+                else if(result == "4"){
+                    alert("提取数额大于可用余额")
+                }
+            },
+        });
+    })
+    $("#cancel-tb").click(function () {
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'showinfo' %}",
+            success: function (result) {
+                if (result == "1"){
+                    location.href = '/';
+                }
+                else if(result == "0"){
+                    location.href = '/';
                 }
             },
         });
