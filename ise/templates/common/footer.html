@@ -470,24 +470,19 @@
             },
         });
     })
-    $("#cancel-tb").click(function () {
-
-        $.ajax({
-            type: 'POST',
-            url: "{% url 'showinfo' %}",
-            success: function (result) {
-                if (result == "1"){
-                    location.href = '/';
-                }
-                else if(result == "0"){
-                    location.href = '/';
-                }
-            },
-        });
+    $(".cancel-tb").click(function () {
+        var ret = window.confirm("确定取消吗?");
+        if(ret) {
+            return true;
+        }
+        else{
+            return false;
+        }
     })
     $.ajaxSetup({
         data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
+
     $("#show-info").click(function () {
         $.ajax({
             type: 'POST',

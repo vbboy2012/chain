@@ -216,7 +216,7 @@
             <td>{{ data.fee }}</td>
             <td>{{ data.addr }}</td>
             <td>{% if data.status == 1 %}提币成功{% elif data.status == 0 %}审核中{% elif data.status == 2 %}已取消{% endif %}</td>
-            <td>{% if data.status == 0 %}<a href="javascript:;" id="cancel-tb">取消</a>{% endif %}</td>
+            <td><input type="hidden" value="{{ data.id }}" id="ids">{% if data.status == 0 %}<a href="/canceltibi/{{ data.id }}/" class="cancel-tb">取消</a>{% endif %}</td>
           </tr>
         {% endfor %}
         </tbody>
@@ -534,7 +534,7 @@
 									<span class="month">8月</span>
 									<span class="year">2017</span>
 								</span>
-							<h2 class="title">公开ICO(早鸟阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<h2 class="title">公募(提前锁定)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
 							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
 						</div>
 					</div>
@@ -546,7 +546,7 @@
 									<span class="month">9月</span>
 									<span class="year">2017</span>
 								</span>
-							<h2 class="title">公开ICO(第二阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<h2 class="title">公募(第二阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
 							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
 						</div>
 					</div>
@@ -558,7 +558,7 @@
 								<span class="month">9月</span>
 								<span class="year">2017</span>
 							</span>
-							<h2 class="title">公开ICO(第三阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
+							<h2 class="title">公募(第三阶段)<a href="javascript:;" style="float: right;color: white">点击参与</a></h2>
 							<p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dapibus, quam non pellentesque consequat, massa justo elementum nunc, ac efficitur tortor nunc sit amet dolor.</p>
 						</div>
 					</div>

@@ -165,6 +165,21 @@ def tibi(request):
     else:
         return JsonResponse('0', safe=False)
 
+def canceltibi(request,id):
+    if request.user.is_authenticated:
+        id = int(id)
+        coinlog = CoinLog.objects.get(id=id, uid=request.user.id)
+        logmoney = coinlog.money
+        logfee = coinlog.fee
+        coinlog.status = 2
+        coinlog.save()
+        useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
+        freenum = logmoney + logfee
+        useraddress.money += freenum
+        useraddress.frozen_num -= freenum
+        useraddress.save()
+    return HttpResponseRedirect('/')
+
 def sendcode(request):
     seed = "1234567890abcdefghijklmnopqrstuvwxyz"
     sa = []
@@ -178,7 +193,7 @@ def sendcode(request):
     return JsonResponse('1', safe=False)
 
 def showinfo(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         rpc_connection = AuthServiceProxy(
             "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
                                         django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
