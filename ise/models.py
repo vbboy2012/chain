@@ -31,3 +31,13 @@ class CoinLog(models.Model):
     fee = models.DecimalField(max_digits=20, decimal_places=8)
     create_time = models.DateTimeField('时间', default=timezone.now())
     status = models.IntegerField('状态', default=0)  # 1成功 0 审核中 2取消
+
+class icolock(models.Model):
+    uid = models.IntegerField()
+    addr = models.CharField(max_length=50)
+    type = models.IntegerField()  # 1 BTC锁定，2ETH锁定
+    money = models.DecimalField(max_digits=20, decimal_places=8)
+    sec = models.DecimalField(max_digits=20, decimal_places=8)
+    create_time = models.DateTimeField('时间', default=timezone.now())
+    status = models.IntegerField('状态', default=0)  # 是否发放代币SEC 1，是，0否
+

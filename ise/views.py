@@ -239,15 +239,34 @@ def changepass(request):
     else:
         return JsonResponse('0', safe=False)
 
+def getreceive(request):
+    rpc_connection = AuthServiceProxy(
+        "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+                                    django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+    useraddress = UserAddress.objects.filter(yt=1)
+    for addr in useraddress:
+        allReceive = rpc_connection.getreceivedbyaddress(addr.addr)
+        if allReceive > 0:
+            alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1)
+            count = 0
+            for log in alllog:
+                count += log.money
+            money = allReceive - count
+            if money > 0:
+                CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, money=money, fee=0)
+            return HttpResponse(money)
+        else:
+            return HttpResponse(addr.addr)
+
 #测试函数
 # walletpassphrase getreceivedbyaddress s
 def bitcoinrpc(request):
     rpc_connection = AuthServiceProxy(
         "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
                                     django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
-  #  user = User.objects.get(id=request.user.id)
-    rpc_connection.walletpassphrase("z35580113",51)
-    address = rpc_connection.getbalance()
+    user = User.objects.get(id=request.user.id)
+    useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
+    address = rpc_connection.getreceivedbyaddress("1JNMrZozmrC2T9TSWeJZhymWb6BuWBKMgH")
     return JsonResponse(address,safe=False)
 
 def test(request):

@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^checkmail/', ise_views.checkmail, name='checkmail'),
     url(r'^addaddress/', ise_views.addaddress, name='addaddress'),
     url(r'^tibi/', ise_views.tibi, name='tibi'),
+    url(r'^getreceive/', ise_views.getreceive, name='getreceive'),
     url(r'^canceltibi/(\d+)/$', ise_views.canceltibi, name='canceltibi'),
     url(r'^sendcode/', ise_views.sendcode, name='sendcode'),
     url(r'^activate/(?P<token>\w+.[-_\w]*\w+.[-_\w]*\w+)/$', ise_views.active_user, name='active_user'),
