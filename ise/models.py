@@ -20,9 +20,6 @@ class UserAddress(models.Model):
     remark = models.CharField(max_length=50, default='')
     status = models.IntegerField('状态', default=1)  #1启用 0 删除
 
-    def __str__(self):
-        return self.uid
-
 class CoinLog(models.Model):
     uid = models.IntegerField()
     addr = models.CharField(max_length=50)
@@ -32,7 +29,7 @@ class CoinLog(models.Model):
     create_time = models.DateTimeField('时间', default=timezone.now())
     status = models.IntegerField('状态', default=0)  # 1成功 0 审核中 2取消
 
-class icolock(models.Model):
+class Icolock(models.Model):
     uid = models.IntegerField()
     addr = models.CharField(max_length=50)
     type = models.IntegerField()  # 1 BTC锁定，2ETH锁定
@@ -40,4 +37,10 @@ class icolock(models.Model):
     sec = models.DecimalField(max_digits=20, decimal_places=8)
     create_time = models.DateTimeField('时间', default=timezone.now())
     status = models.IntegerField('状态', default=0)  # 是否发放代币SEC 1，是，0否
+
+class Config(models.Model):
+    title = models.CharField(max_length=50)
+    btcRate = models.IntegerField('BTC兑换率', default=0)
+    ethRate = models.IntegerField('ETH兑换率', default=0)
+    isOpen = models.BooleanField(default=False)
 

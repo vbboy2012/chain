@@ -194,11 +194,12 @@ def sendcode(request):
 
 def showinfo(request):
     if request.method == 'POST' and request.user.is_authenticated:
-        rpc_connection = AuthServiceProxy(
-            "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
-                                        django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
-        address = rpc_connection.getnewaddress(request.user.username)
-        UserAddress.objects.create(uid=request.user.id, type=1,yt=1, addr=address, money=0, status=1)
+        # rpc_connection = AuthServiceProxy(
+        #     "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+        #                                 django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+        # address = rpc_connection.getnewaddress(request.user.username)
+        address = '1JNMrZozmrC2T9TSWeJZhymWb6BuWBKMgH'
+        UserAddress.objects.create(uid=request.user.id, type=1, yt=1, addr=address, money=0, status=1)
         return JsonResponse('1', safe=False)
     else:
         return JsonResponse('0', safe=False)
@@ -257,6 +258,20 @@ def getreceive(request):
             return HttpResponse(money)
         else:
             return HttpResponse(addr.addr)
+
+def icolock(request):
+    if request.method == 'POST':
+        icoStep = request.POST['step']
+        if icoStep == '1':
+            return JsonResponse('1', safe=False)
+        elif icoStep == '2':
+            return JsonResponse('2', safe=False)
+        elif icoStep == '3':
+            return JsonResponse('3', safe=False)
+        elif icoStep == '4':
+            return JsonResponse('4', safe=False)
+    else:
+        return JsonResponse('0', safe=False)
 
 #测试函数
 # walletpassphrase getreceivedbyaddress s

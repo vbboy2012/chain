@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^tibi/', ise_views.tibi, name='tibi'),
     url(r'^getreceive/', ise_views.getreceive, name='getreceive'),
     url(r'^canceltibi/(\d+)/$', ise_views.canceltibi, name='canceltibi'),
+    url(r'^icolock/', ise_views.icolock, name='icolock'),
     url(r'^sendcode/', ise_views.sendcode, name='sendcode'),
     url(r'^activate/(?P<token>\w+.[-_\w]*\w+.[-_\w]*\w+)/$', ise_views.active_user, name='active_user'),
     url(r'^test/', ise_views.test, name='test'),

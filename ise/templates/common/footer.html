@@ -14,15 +14,19 @@
         <h4 class="modal-title" id="exampleModalLabel">设置资金密码</h4>
       </div>
       <div class="modal-body">
-        <form id="setpass-form">
+        <form class="form-horizontal" id="setpass-form">
             {% csrf_token %}
           <div class="form-group">
-            <label for="recipient-name" class="control-label">密码:</label>
-            <input type="password" class="form-control" id="safepass1" name="safepass1">
+            <label class="col-sm-2 control-label">密码:</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="safepass1" name="safepass1">
+            </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="control-label">确认密码:</label>
-            <input type="password" class="form-control" id="safepass2" name="safepass2">
+            <label class="col-sm-2 control-label">确认密码:</label>
+             <div class="col-sm-10">
+              <input type="password" class="form-control" id="safepass2" name="safepass2">
+            </div>
           </div>
         </form>
       </div>
@@ -42,20 +46,26 @@
         <h4 class="modal-title" id="exampleModalLabel">更改密码</h4>
       </div>
       <div class="modal-body">
-        <form id="changesp-form">
+        <form class="form-horizontal" id="changesp-form">
             {% csrf_token %}
             <input type="hidden" value="0" name="type" id="changeType">
             <div class="form-group">
-            <label for="recipient-name" class="control-label">原始密码:</label>
-            <input type="password" class="form-control" id="oldpass" name="oldpass">
+            <label class="col-sm-2 control-label">原始密码:</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="oldpass" name="oldpass">
+            </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="control-label">新密码:</label>
-            <input type="password" class="form-control" id="newpass1" name="newpass1">
+            <label class="col-sm-2 control-label">新密码:</label>
+           <div class="col-sm-10">
+              <input type="password" class="form-control" id="newpass1" name="newpass1">
+            </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="control-label">确认密码:</label>
-            <input type="password" class="form-control" id="newpass2" name="newpass2">
+            <label class="col-sm-2 control-label">确认密码:</label>
+              <div class="col-sm-10">
+              <input type="password" class="form-control" id="newpass2" name="newpass2">
+            </div>
           </div>
         </form>
       </div>
@@ -144,7 +154,7 @@
             <label class="col-sm-2 control-label">提币数量:</label>
             <div class="col-sm-10">
               <input type="text" class="form-control" name="tbcount">
-              <label class=" control-label">可提现最大金额（含手续费）：<span style="color: red;display: none;float: right" id="balance-btc">BTC{% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-eth">ETH{% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-sec">SEC{% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
+              <label class=" control-label">可提现最大金额（含手续费）：<span style="color: red;display: none;float: right" id="balance-btc">BTC {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-eth">ETH {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-sec">SEC {% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
             </div>
           </div>
            <div class="form-group">
@@ -175,6 +185,40 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="icoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="icotype"></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="ico-form">
+            {% csrf_token %}
+          <div class="form-group">
+            <input type="hidden" value="" id="icoValue">
+            <label class="col-sm-2 control-label">锁定数额:</label>
+            <div class="col-sm-10">
+             <input type="text" class="form-control" name="money">
+                <label class=" control-label">可用金额：<span style="color: red;display: none;float: right" id="balance-icobtc">BTC {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-icoeth">ETH {% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">资金密码:</label>
+             <div class="col-sm-10">
+              <input type="password" class="form-control" name="safepass">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="icosubmit">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="{% static 'scripts/jquery-1.10.2.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'scripts/jquery.smooth-scroll.min.js' %}"></script>
@@ -196,6 +240,28 @@
         $("#login-div").show();
         $("#signup-div").hide();
     })
+    $("a[name='ico-lock']").click(function () {
+        var icotype = $(this).attr('id');
+        $("#icoValue").val(icotype);
+        var type = icotype.split("-");
+        if(type[0] == "step1") {
+            $("#icotype").text("限额锁定");
+        } else if(type[0] == "step2"){
+            $("#icotype").text("公募(第一阶段)");
+        } else if(type[0] == "step3"){
+            $("#icotype").text("公募(第二阶段)");
+        } else if(type[0] == "step4"){
+            $("#icotype").text("公募(第三阶段)");
+        }
+        if(type[1] == "btc"){
+            $("#balance-icobtc").css('display','block');
+            $("#balance-icoeth").css('display','none');
+        } else if(type[1] == "eth"){
+            $("#balance-icobtc").css('display','none');
+            $("#balance-icoeth").css('display','block');
+        }
+    })
+
     $("#tbdz-table tr td a").click(function () {
         var addr = $(this).parent().parent().find("td:eq(1)").text();
         var type = $(this).parent().parent().find("td:eq(2)").text();
@@ -478,6 +544,29 @@
         else{
             return false;
         }
+    })
+    $("#icosubmit").click(function () {
+        var data = $("#ico-form").serialize();
+        alert(data);
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'icolock' %}",
+            data: data,
+            success: function (result) {
+                if (result == "1"){
+                    alert("提交成功");
+                    location.href = '/';
+                }else if(result == "2"){
+                    alert("资金密码错误");
+                }
+                else if(result == "3"){
+                    alert("验证码不正确");
+                }
+                else if(result == "4"){
+                    alert("提取数额大于可用余额")
+                }
+            },
+        });
     })
     $.ajaxSetup({
         data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
