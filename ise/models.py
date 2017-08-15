@@ -26,7 +26,7 @@ class CoinLog(models.Model):
     type = models.IntegerField()    # 1 充值记录，2提现记录
     money = models.DecimalField(max_digits=20, decimal_places=8)
     fee = models.DecimalField(max_digits=20, decimal_places=8)
-    create_time = models.DateTimeField('时间', default=timezone.now())
+    create_time = models.DateTimeField('时间', default=timezone.now)
     status = models.IntegerField('状态', default=0)  # 1成功 0 审核中 2取消
 
 class Icolock(models.Model):
@@ -35,12 +35,16 @@ class Icolock(models.Model):
     type = models.IntegerField()  # 1 BTC锁定，2ETH锁定
     money = models.DecimalField(max_digits=20, decimal_places=8)
     sec = models.DecimalField(max_digits=20, decimal_places=8)
-    create_time = models.DateTimeField('时间', default=timezone.now())
+    create_time = models.DateTimeField('时间', default=timezone.now)
     status = models.IntegerField('状态', default=0)  # 是否发放代币SEC 1，是，0否
 
 class Config(models.Model):
     title = models.CharField(max_length=50)
     btcRate = models.IntegerField('BTC兑换率', default=0)
     ethRate = models.IntegerField('ETH兑换率', default=0)
+    secCount = models.IntegerField('sec总量', default=0)
+    icoCount = models.IntegerField('sec已发量', default=0)
+    start_time = models.DateTimeField('开始时间',default=timezone.now)
+    end_time = models.DateTimeField('结束时间',default=timezone.now)
     isOpen = models.BooleanField(default=False)
 

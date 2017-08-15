@@ -579,8 +579,15 @@
 								</span>
 							<h2 class="title">公募(第二阶段)
                                 <div style="float: right">
-                                <a href="javascript:;" name="ico-lock" id="step3-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
-                                <a href="javascript:;" name="ico-lock" id="step3-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
+                                {% for c in config %}
+                                    {% if c.id == 2 and c.isOpen%}
+                                        <a href="javascript:;" style="color: white;" name="ico-lock" id="step3-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
+                                        <a href="javascript:;" style="color: white;" name="ico-lock" id="step3-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
+                                    {% elif c.id == 2 and c.isOpen == 0 %}
+                                        <a href="javascript:;" style="color: white;">未开始</a>
+                                    {% endif %}
+                                {% endfor %}
+
                                 </div>
                             </h2>
 							<p class="description">

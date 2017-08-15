@@ -2,13 +2,14 @@ from django.shortcuts import render
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login as auth_login,logout as auto_logout
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User,UserAddress,CoinLog
+from .models import User,UserAddress,CoinLog,Config,Icolock
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 from bitcoinrpc.authproxy import AuthServiceProxy,JSONRPCException
 from django.core.mail import send_mail
 from .Token import Token
+from django.utils import timezone
 from django.conf import settings as django_settings
-import random
+import random,decimal
 
 # Create your views here.
 token_confirm = Token(django_settings.SECRET_KEY)
@@ -19,11 +20,9 @@ def index(request):
         czList = CoinLog.objects.filter(uid=request.user.id).filter(type=1)
         tbList = CoinLog.objects.filter(uid=request.user.id).filter(type=2)
         userinfo = User.objects.get(id=request.user.id)
-        if not czdz:
-            status = 0
-        else:
-            status = 1
-        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo})
+        检查阶段ICO是否结束
+        config = Config.objects.all()
+        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo, 'conifg':config})
     else:
         return render(request, 'index.html')
 
@@ -261,15 +260,41 @@ def getreceive(request):
 
 def icolock(request):
     if request.method == 'POST':
-        icoStep = request.POST['step']
-        if icoStep == '1':
-            return JsonResponse('1', safe=False)
-        elif icoStep == '2':
+        #检查资金密码
+        safepass = request.POST['safepass']
+        user = User.objects.get(id=request.user.id)
+        if not check_password(safepass, user.safe_password):
             return JsonResponse('2', safe=False)
-        elif icoStep == '3':
+        # 检测资金是否充足
+        icoStep = str(request.POST['icoStep'])
+        stepArr = icoStep.split('-')
+        if(stepArr[1] == 'btc'):
+            type = 1
+        else:               #eth
+            type = 2
+        money = float(request.POST['money'])
+        useraddress = UserAddress.objects.get(uid=request.user.id, type=type, yt=1)
+        if money > useraddress.money:  # 可用资金不足
             return JsonResponse('3', safe=False)
-        elif icoStep == '4':
-            return JsonResponse('4', safe=False)
+        else:
+            # 进入ICO环节
+            sec = 0
+            if stepArr[0] == 'step1':
+                config = Config.objects.get(id=1)
+            elif stepArr[0] == 'step2':
+                config = Config.objects.get(id=2)
+            elif stepArr[0] == 'step3':
+                config = Config.objects.get(id=3)
+            elif stepArr[0] == 'step4':
+                config = Config.objects.get(id=4)
+            if type == 1:
+                sec = config.btcRate * money
+            elif type == 2:
+                sec = config.ethRate * money
+            Icolock.objects.create(uid=request.user.id, addr=useraddress.addr, type=type, money=money, sec=sec)
+            useraddress.money -= decimal.Decimal(money)
+            useraddress.save()
+            return JsonResponse("1", safe=False)
     else:
         return JsonResponse('0', safe=False)
 
