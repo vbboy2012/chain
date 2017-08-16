@@ -20,10 +20,18 @@ def index(request):
         czList = CoinLog.objects.filter(uid=request.user.id).filter(type=1)
         tbList = CoinLog.objects.filter(uid=request.user.id).filter(type=2)
         userinfo = User.objects.get(id=request.user.id)
-        检查阶段ICO是否结束
-        config = Config.objects.all()
-        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo, 'conifg':config})
+        if not czdz:
+            status = 0
+        else:
+            status = 1
+        #检查阶段ICO是否结束
+        icoConfig = Config.objects.filter(id=1)
+        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo, 'icoConfig': icoConfig})
     else:
+        #检查阶段ICO是否结束
+        icoConfig = Config.objects.all()
+        return render(request, 'index.html',
+                      {'icoConfig': icoConfig})
         return render(request, 'index.html')
 
 def register(request):

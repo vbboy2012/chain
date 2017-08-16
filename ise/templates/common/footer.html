@@ -2,7 +2,7 @@
 <footer class="footer">
   <div class="container">
     <div class="row">
-      <div class="col-lg-12">Portefeuille  &copy; - Free One Page Website Template More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a> </div>
+      <div class="col-lg-12">2017 RISChain © All rights reserved. </div>
     </div>
   </div>
 </footer>
@@ -241,6 +241,11 @@
         $("#signup-div").hide();
     })
     $("a[name='ico-lock']").click(function () {
+        var isLogin = $("#checkLogin").val();
+        if(isLogin == 0){
+            alert("请先登录");
+            return false;
+        }
         var icotype = $(this).attr('id');
         $("#icoStep").val(icotype);
         var type = icotype.split("-");
@@ -632,11 +637,11 @@
         data: {
             datasets: [{
                 data: [
-                    50,
-                    20,
-                    10,
+                    45,
                     5,
-                    15,
+                    10,
+                    35,
+                    5,
                 ],
                 backgroundColor: [
                     window.chartColors.red,
@@ -648,11 +653,11 @@
                 label: 'Dataset 1'
             }],
             labels: [
-                "ICO",
-                "开发团队",
-                "私募投资人",
-                "市场推广，商业落地",
-                "Pos锁仓奖励"
+                "公开售卖",
+                "投资人",
+                "落地拓展",
+                "挖矿",
+                "基金"
             ]
         },
         options: {
