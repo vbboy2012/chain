@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% trans 'RISCChain'%}</title>
+<title>{% trans 'RISChain'%}</title>
     <meta name="keywords" content="BTC,RISCChain">
     <meta name="description" content="RISC是一个面向全球的资源信息共享经济体区块链网络，一个实现真正的对等交易和共享经济的平台，RISC的宗旨是让全民参与进来共同建设共享经济 2.0">
     {% include 'common/link.html' %}
@@ -25,7 +25,6 @@
       <div class="centered">
         <div class="container">
           <div class="section-headlines">
-              <img style="width: 10%" src="{% static 'images/tokenlogo.png' %}">
             <h1>Resource Information Share Chain</h1>
              <h2>分享链</h2>
             <p>{% trans '一个面向全球的资源信息分享区块链应用平台，任何人或公司都可以分享自己的资源信息需求。如：汽车、设备、住房、办公室、知识、经验、生活服务、旅行...'%}</p>
@@ -87,12 +86,7 @@
             <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in czdz%}{{ data.frozen_num }}{% endfor %}</td>
           </tr>
           <tr>
-            <td>ETH账户</td>
-            <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
-            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in czdz%}{{ data.frozen_num }}{% endfor %}</td>
-          </tr>
-          <tr>
-            <td>SEC账户</td>
+            <td>RIS账户</td>
             <td>暂未开放</td>
             <td></td>
           </tr>
@@ -119,7 +113,6 @@
       <!-- Default panel contents -->
       <div class="panel-body">
         <div class="alert alert-success" role="alert">BTC充值地址：{% for data in czdz%}{{ data.addr }}{% endfor %}</div>
-        <div class="alert alert-info" role="alert">ETH充值地址：{% for data in czdz%}{{ data.addr }}{% endfor %}</div>
       </div>
         <div class="panel-heading">充值记录</div>
         {% if czList %}
@@ -188,7 +181,7 @@
             <tr>
             <td>{{ dz.remark }}</td>
             <td>{{ dz.addr }}</td>
-            <td>{% if dz.type == 1 %}BTC{% elif dz.type == 2 %}ETH{% elif dz.type == 3 %}SEC{% endif %}</td>
+            <td>{% if dz.type == 1 %}BTC{% elif dz.type == 2 %}ETH{% elif dz.type == 3 %}RIS{% endif %}</td>
             <td><a href="javascript:;" id="tb" data-toggle="modal" data-target="#tbModal">提币</a></td>
           </tr>
         {% endfor %}
@@ -237,13 +230,13 @@
     <div class="section-headlines">
       <h4>
           <input type="hidden" id="join-status" value="1">
-      <a href="javascript:;" id="join-us" class="btn btn-outline btn-lg"> 加入共享经济体 </a>
+       加入分享链
       </h4>
-      <h2>让我们一起建设共享经济2.0</h2>
+
     </div>
     <div class="row">
     <div class="col-lg-8 col-lg-offset-4">
-    <div id="login-div" style="display: none;">
+    <div id="login-div">
         <form id="login-form">
         {% csrf_token %}
       <div class="form-group">
@@ -295,7 +288,7 @@
   <div class="container">
     <div class="section-headlines">
       <h4>RISC能做什么？</h4>
-      <div>基于区块链技术去中心化，安全可信任的资源信息共享平台，将会是共享经济 2.0，RISC是一个实现真正的对等交易和共享经济的平台</div>
+      <div>基于区块链技术去中心化，安全可信任的资源信息分享平台，将会是共享经济 2.0，RISC是一个实现真正的对等交易和共享经济的平台</div>
     </div>
     <div class="row">
       <div class="col-lg-6 features text-center"> <img src="{% static 'images/pic3-450x410.png' %}" alt="" /> </div>
@@ -396,7 +389,7 @@
             <td>私募投资人</td>
             <td>5%</td>
             <td>5,000,000</td>
-            <td>早期对共享链提供资金和技术支持的投资人和公司，我们予以分享币作为回报</td>
+            <td>早期对分享链提供资金和技术支持的投资人和公司，我们予以分享币作为回报</td>
           </tr>
         <tr>
             <td>商业落地及市场拓展</td>
@@ -438,7 +431,7 @@
           <div class="img_block"><img alt="" src="{% static 'images/team/44.png' %}"></div>
           <div class="team_body">
             <h5>吴资龙</h5>
-            <h6>共享链团队总监</h6>
+            <h6>分享链团队总监</h6>
             <p>曾担任腾讯技术总监，毕业于四川大学。比特币早起投资人，2011年开始研究区块链技术并发表多篇论文。</p>
           </div>
         </div>
@@ -512,16 +505,16 @@
     </div>
     <div class="pricing-plans row">
         <p>Q：什么是RISC？</p>
-        <p>A：RISC(Resource Information Share Chain)是一个面向全球的资源信息共享经济体区块链网络，一个实现真正的对等交易和共享经济的平台，RISC的宗旨是让全民参与进来共同建设共享经济 2.0</p>
+        <p>A：RISC(Resource Information Share Chain)是一个面向全球的资源信息分享区块链应用平台，任何人或公司都可以分享自己的资源信息需求。如：汽车、设备、住房、办公室、知识、经验、生活服务、旅行...，一个实现真正的对等交易和共享经济的平台，RISC的宗旨是让全民参与进来共同建设共享经济 2.0</p>
         </br>
         <p>Q：什么是ICO？</p>
         <p>A：ICO（英文简称Initial Coin Offering）是一种为加密数字货币/区块链项目筹措资金的常用方式，早期参与者可以从中获得初始产生的加密数字货币作为回报。ico是国际上加密数字货币/区块链社区的产物，为区块链的开发者筹措足够的运营资金，大部分ico筹措的资金都是比特币或者其他加密数字货币。</p>
         </br>
         <p>Q：什么是RIS？</p>
-        <p>A：RIS是RISC基于以太坊区块链发行的代币。总量为10亿，ICO公开发售50%。</p>
+        <p>A：RIS是分享链上的代币。总量为1亿，ICO公开发售45%。</p>
         </br>
         <p>Q：RIS代币有什么用途？</p>
-        <p>A：RIS将在共享经济平台中流通，用做交易支付、信用担保、跨国转账，没有任何手续费，有非常大的升值潜力。</p>
+        <p>A：RIS将在分享链平台中流通，用做交易支付、信用担保、跨国转账，没有任何手续费。</p>
         </br>
         <p>Q：RIS什么时候开始公开发售？</p>
         <p>A：RIS代币ICO公开发售预计在9月1号开始，具体以官网公告为准。在正式公开ICO之前7天，官网会提前开放ICO限额预售功能，目的是为了防止少数大户垄断行为，让更多的人公平的参与进来。</p>
@@ -529,8 +522,7 @@
         <p>Q：ICO募集的资金将用于哪些范围？</p>
         <p>A：RISC资源信息共享经济区块链网络的开发、共享经济项目的落地推广、海外业务的拓展与开发团队扩增，以及相关运营、法律、方案设计。</p></p>
         </br>
-        <p>Q：RIS将在哪些平台公开ICO？</p>
-        <p>A：目前未定。</p>
+
     </div>
     <!--end:.pricing-table-->
 
@@ -562,8 +554,11 @@
                                  {% for c in icoConfig %}
                                     {% if c.id == 1 %}
                                         {% if c.isOpen %}
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step1-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step1-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
+                                            {% if c.icoCount >= c.secCount %}
+                                                <a href="javascript:;" style="color: white;">已完成</a>
+                                            {% else %}
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step1" data-toggle="modal" data-target="#icoModal">参与支持</a>&nbsp;
+                                            {% endif %}
                                         {% else %}
                                             <a href="javascript:;" style="color: white;">未开放</a>
                                         {% endif %}
@@ -572,15 +567,20 @@
                                 </div>
                             </h2>
 							<p class="description">
-                                开始时间：2017-8-25 12:00:00<br>
-                                截止时间：2017-8-27 12:00:00<br>
-                                目标额度：500BTC<br>
-                                限额大小：最大1BTC/最小0.3BTC<br>
+                                开始时间：2017-8-24 12:00:00<br>
+                                截止时间：2017-9-1  12:00:00<br>
+                                 目标额度：500BTC<br>
+                                限额大小：最小0.1BTC/最大5BTC<br>
+                                支持人数：{% for list in rateList %}{% if list.id == 1 %}{{ list.count }}{% endif %}{% endfor %}<br>
                             </p>
                             <div class="progress" style="margin-top: 5px">
-                              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                0%
-                              </div>
+                            {% for list in rateList %}
+                                {% if list.id == 1   %}
+                                  <div class="progress-bar" role="progressbar" aria-valuenow="{{ list.rate }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ list.rate }}%;">
+                                    {{ list.rate }}%
+                                  </div>
+                                {% endif %}
+                            {% endfor %}
                             </div>
 
 						</div>
@@ -593,13 +593,16 @@
 									<span class="month">8月</span>
 									<span class="year">2017</span>
 								</span>
-							<h2 class="title">公募(第一阶段)
+							<h2 class="title">公募阶段
                                 <div style="float: right">
                                 {% for c in icoConfig %}
                                     {% if c.id == 2 %}
                                         {% if c.isOpen %}
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step2-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step2-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
+                                            {% if c.icoCount >= c.secCount %}
+                                                <a href="javascript:;" style="color: white;">已完成</a>
+                                            {% else %}
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step2" data-toggle="modal" data-target="#icoModal">参与支持</a>&nbsp;
+                                            {% endif %}
                                         {% else %}
                                             <a href="javascript:;" style="color: white;">未开放</a>
                                         {% endif %}
@@ -608,82 +611,19 @@
                                 </div>
                             </h2>
 							<p class="description">
-                                开始时间：2017-8-27 12:00:00<br>
-                                截止时间：2017-9-3  12:00:00<br>
-                                目标额度：500BTC<br>
+                                开始时间：2017-9-1 12:00:00<br>
+                                截止时间：2017-9-30  12:00:00<br>
+                                目标额度：1000BTC<br>
+                                支持人数：{% for list in rateList %}{% if list.id == 2 %}{{ list.count }}{% endif %}{% endfor %}<br>
                             </p>
                             <div class="progress" style="margin-top: 5px">
-                              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                0%
-                              </div>
-                            </div>
-						</div>
-					</div>
-
-				    <div class="timeline">
-					    <div class="timeline-content">
-							<span class="date">
-									<span class="day">7<sup>th</sup></span>
-									<span class="month">9月</span>
-									<span class="year">2017</span>
-								</span>
-							<h2 class="title">公募(第二阶段)
-                                <div style="float: right">
-                                {% for c in icoConfig %}
-                                    {% if c.id == 3 %}
-                                        {% if c.isOpen %}
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step3-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step3-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
-                                        {% else %}
-                                            <a href="javascript:;" style="color: white;">未开放</a>
-                                        {% endif %}
-                                    {% endif %}
-                                 {% endfor %}
-                                </div>
-                            </h2>
-							<p class="description">
-                                开始时间：2017-9-3  12:00:00<br>
-                                截止时间：2017-9-10 12:00:00<br>
-                                目标额度：500BTC<br>
-                            </p>
-                            <div class="progress" style="margin-top: 5px">
-                              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                0%
-                              </div>
-                            </div>
-						</div>
-					</div>
-
-				    <div class="timeline">
-					    <div class="timeline-content">
-						    <span class="date">
-								<span class="day">15<sup>th</sup></span>
-								<span class="month">9月</span>
-								<span class="year">2017</span>
-							</span>
-							<h2 class="title">公募(第三阶段)
-                                <div style="float: right;">
-                                {% for c in icoConfig %}
-                                    {% if c.id == 4 %}
-                                        {% if c.isOpen %}
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step4-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
-                                            <a href="javascript:;" style="color: white;" name="ico-lock" id="step4-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
-                                        {% else %}
-                                            <a href="javascript:;" style="color: white;">未开放</a>
-                                        {% endif %}
-                                    {% endif %}
-                                 {% endfor %}
-                                </div>
-                            </h2>
-							<p class="description">
-                                开始时间：2017-9-10 12:00:00<br>
-                                截止时间：2017-9-17 12:00:00<br>
-                                目标额度：500BTC<br>
-                            </p>
-                            <div class="progress" style="margin-top: 5px">
-                              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                0%
-                              </div>
+                              {% for list in rateList %}
+                                {% if list.id == 2   %}
+                                  <div class="progress-bar" role="progressbar" aria-valuenow="{{ list.rate }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ list.rate }}%;">
+                                    {{ list.rate }}%
+                                  </div>
+                                {% endif %}
+                            {% endfor %}
                             </div>
 						</div>
 					</div>
@@ -695,31 +635,67 @@
 
 </div>
 
-<!-- Subscription -->
+    <!-- Subscription -->
 <section class="section type-4 email-susbscription">
 
-  <div class="container">
+  <div class="container" style="text-align: center">
     <div class="row">
-    <div class="col-lg-3">
-    	<img width="200" height="180" src="images/email.png" alt="email">
+    <div class="col-lg-4">
+    	<img src="{% static 'images/qqq.jpg' %}" style="width: 40%">
+        <p>官方1群：635902703</p>
     </div>
-
-    <div class="col-lg-9">
-    <h1>Subscribe to our newsletter and never miss any update!</h1>
-    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur sedits aut odit fugit, sed quia magni dolores eos qui ratione sequi nesciunt.</p>
-
-                  <form method="" action="">
-                    <p>
-                      <input type="email" name="EMAIL" placeholder="Enter your email address">
-                      <input type="submit" value="Let's get started!" class="btn btn-primary">
-                    </p>
-                  </form>
+    <div class="col-lg-4">
+    	<img src="{% static 'images/webo.png' %}" style="width: 40%">
+        <p>官方微博</p>
     </div>
+        <div class="col-lg-4" style="text-align: left">
+        <p>商务合作：business@rischain.com</p>
+        <p>客户支持：support@rischain.com</p>
+        <p>加入团队：team@rischain.com</p>
 
+    </div>
 
     </div>
   </div>
 </section>
+
+<div id="jump6" class="jumper"></div>
+
+<!-- Contact -->
+ <div class="section type-1 section-contact">
+  <div class="container">
+    <div class="section-headlines">
+      <h4>
+      联系我们
+      </h4>
+    </div>
+
+    <div class="row">
+    <div class="col-lg-7 col-lg-offset-3">
+    <form id="contac-form">
+        {% csrf_token %}
+      <div class="form-group">
+        <div class="row">
+          <div class="col-lg-6">
+            <input type="text" class="form-control" id="contact-name" name="name" placeholder="你的名称 *">
+            <br class="gap-15"/>
+          </div>
+          <div class="col-lg-6">
+            <input type="text" class="form-control" id="contact-email" name="email" placeholder="你的邮箱 *">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" id="contact-subject" name="subject" placeholder="标题 *">
+      </div>
+      <div class="form-group">
+        <textarea class="form-control" id="contact-message" name="message" rows="8"></textarea>
+      </div>
+      <button type="button" id="contact-send" class="btn btn-block btn-success">发送消息 </button>
+    </form>
+
+  </div>
+</div>
 
 {% endblock %}
 

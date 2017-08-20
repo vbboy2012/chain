@@ -32,7 +32,7 @@ class CoinLog(models.Model):
 class Icolock(models.Model):
     uid = models.IntegerField()
     addr = models.CharField(max_length=50)
-    type = models.IntegerField()  # 1 BTC锁定，2ETH锁定
+    type = models.IntegerField()  # 1 阶段类型
     money = models.DecimalField(max_digits=20, decimal_places=8)
     sec = models.DecimalField(max_digits=20, decimal_places=8)
     create_time = models.DateTimeField('时间', default=timezone.now)
@@ -48,3 +48,8 @@ class Config(models.Model):
     end_time = models.DateTimeField('结束时间',default=timezone.now)
     isOpen = models.BooleanField(default=False)
 
+class Contact(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    subject = models.CharField(max_length=50)
+    message = models.CharField(max_length=50)

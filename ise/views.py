@@ -2,12 +2,11 @@ from django.shortcuts import render
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login as auth_login,logout as auto_logout
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User,UserAddress,CoinLog,Config,Icolock
+from .models import User,UserAddress,CoinLog,Config,Icolock,Contact
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
-from bitcoinrpc.authproxy import AuthServiceProxy,JSONRPCException
+from bitcoinrpc.authproxy import AuthServiceProxy
 from django.core.mail import send_mail
 from .Token import Token
-from django.utils import timezone
 from django.conf import settings as django_settings
 import random,decimal
 
@@ -24,15 +23,27 @@ def index(request):
             status = 0
         else:
             status = 1
-        #检查阶段ICO是否结束
-        icoConfig = Config.objects.filter(id=1)
-        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo, 'icoConfig': icoConfig})
+        # 检查阶段ICO是否结束
+        icoConfig = Config.objects.all()
+        rateList = []
+        i = 1
+        for config in icoConfig:
+            count = Icolock.objects.filter(type=i).count()
+            rate = {'id': i, 'rate': round((config.icoCount / config.secCount * 100), 2), 'icoCount': config.icoCount, 'count': count}
+            rateList.append(rate)
+            i += 1
+        return render(request, 'index.html', {'status': status, 'czdz': czdz, 'tbdzList': tbdzList, 'czList': czList, 'tbList': tbList, 'userinfo': userinfo, 'icoConfig': icoConfig,'rateList':rateList})
     else:
         #检查阶段ICO是否结束
         icoConfig = Config.objects.all()
+        rateList = []
+        i = 1
+        for config in icoConfig:
+            rate = {'id': i, 'rate': round((config.icoCount / config.secCount * 100), 2), 'icoCount': config.icoCount}
+            rateList.append(rate)
+            i += 1
         return render(request, 'index.html',
-                      {'icoConfig': icoConfig})
-        return render(request, 'index.html')
+                      {'icoConfig': icoConfig, 'rateList':rateList})
 
 def register(request):
     if request.method == 'POST':
@@ -46,9 +57,9 @@ def register(request):
                 user = User.objects.create_user(username=cd['username'], password=cd['password1'])
                 user.save()
                 token = token_confirm.generate_validate_token(cd['username'])
-                message = "\n".join([u'{0},欢迎加入RISE'.format(cd['username']), u'请访问该链接，完成用户验证:',
+                message = "\n".join([u'{0},欢迎加入RISChain'.format(cd['username']), u'请访问该链接，完成用户验证:',
                                      '/'.join([django_settings.DOMAIN, 'activate', token])])
-                send_mail('RISEChain用户注册验证!', message, 'vbboy2012@163.com', [cd['username']], fail_silently=False)
+                send_mail('RISChain用户注册验证!', message, django_settings.EMAIL_HOST_USER, [cd['username']], fail_silently=False)
                 #Login
                 auth_login(request, user)
                 return JsonResponse('2', safe=False)
@@ -98,9 +109,9 @@ def checkmail(request):
     if request.method == 'POST':
         user = User.objects.get(id=request.user.id)
         token = token_confirm.generate_validate_token(user.username)
-        message = "\n".join([u'{0},欢迎加入RISE'.format(user.username), u'请访问该链接，完成用户验证:',
+        message = "\n".join([u'{0},欢迎加入RISChain'.format(user.username), u'请访问该链接，完成用户验证:',
                              '/'.join([django_settings.DOMAIN, 'activate', token])])
-        send_mail('RISEChain用户注册验证!', message, 'vbboy2012@163.com', [user.username], fail_silently=False)
+        send_mail('RISChain用户注册验证!', message, django_settings.EMAIL_HOST_USER, [user.username], fail_silently=False)
         return JsonResponse('1', safe=False)
     else:
         return JsonResponse('0', safe=False)
@@ -188,7 +199,7 @@ def canceltibi(request,id):
     return HttpResponseRedirect('/')
 
 def sendcode(request):
-    seed = "1234567890abcdefghijklmnopqrstuvwxyz"
+    seed = "1234567890"
     sa = []
     for i in range(4):
         sa.append(random.choice(seed))
@@ -196,7 +207,7 @@ def sendcode(request):
     request.session['tbcode'] = salt
     user = User.objects.get(id=request.user.id)
     message = "\n".join([u'您的验证码是：{0}'.format(salt)])
-    send_mail('RISEChain添加提币地址验证!', message, 'vbboy2012@163.com', [user.username], fail_silently=False)
+    send_mail('RISChain添加提币地址验证!', message, django_settings.EMAIL_HOST_USER, [user.username], fail_silently=False)
     return JsonResponse('1', safe=False)
 
 def showinfo(request):
@@ -262,61 +273,82 @@ def getreceive(request):
             money = allReceive - count
             if money > 0:
                 CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, money=money, fee=0)
-            return HttpResponse(money)
+                return HttpResponse(money)
+            else:
+                return HttpResponse(allReceive)
         else:
             return HttpResponse(addr.addr)
 
 def icolock(request):
     if request.method == 'POST':
-        #检查资金密码
+        # 检查资金密码
         safepass = request.POST['safepass']
         user = User.objects.get(id=request.user.id)
         if not check_password(safepass, user.safe_password):
             return JsonResponse('2', safe=False)
         # 检测资金是否充足
-        icoStep = str(request.POST['icoStep'])
-        stepArr = icoStep.split('-')
-        if(stepArr[1] == 'btc'):
-            type = 1
-        else:               #eth
-            type = 2
+        icoStep = request.POST['icoStep']
+        # 判断是否ICO结束
+        if icoStep == 'step1':
+            config = Config.objects.get(id=1)
+        elif icoStep == 'step2':
+            config = Config.objects.get(id=2)
+        elif icoStep == 'step3':
+            config = Config.objects.get(id=3)
+        elif icoStep == 'step4':
+            config = Config.objects.get(id=4)
+        if config.icoCount >= config.secCount:
+            return JsonResponse('5', safe=False)
+
         money = float(request.POST['money'])
-        useraddress = UserAddress.objects.get(uid=request.user.id, type=type, yt=1)
+        useraddress = UserAddress.objects.get(uid=request.user.id, type=1, yt=1)
         if money > useraddress.money:  # 可用资金不足
             return JsonResponse('3', safe=False)
         else:
             # 进入ICO环节
-            sec = 0
-            if stepArr[0] == 'step1':
-                config = Config.objects.get(id=1)
-            elif stepArr[0] == 'step2':
-                config = Config.objects.get(id=2)
-            elif stepArr[0] == 'step3':
-                config = Config.objects.get(id=3)
-            elif stepArr[0] == 'step4':
-                config = Config.objects.get(id=4)
-            if type == 1:
-                sec = config.btcRate * money
-            elif type == 2:
-                sec = config.ethRate * money
-            Icolock.objects.create(uid=request.user.id, addr=useraddress.addr, type=type, money=money, sec=sec)
+            sec = config.btcRate * money
+            Icolock.objects.create(uid=request.user.id, addr=useraddress.addr, type=config.id, money=money, sec=sec)
+            config.icoCount += sec
+            config.save()
             useraddress.money -= decimal.Decimal(money)
             useraddress.save()
             return JsonResponse("1", safe=False)
     else:
         return JsonResponse('0', safe=False)
 
-#测试函数
-# walletpassphrase getreceivedbyaddress s
+def autoico(request,type):
+    if request.user.is_authenticated and request.user.id == 1:
+        config = Config.objects.get(id=type)
+        money = random.randrange(1, 3, 1)
+        sec = config.btcRate * money
+        Icolock.objects.create(uid=request.user.id, addr='', type=type, money=money, sec=sec)
+        config.icoCount += sec
+        config.save()
+        return HttpResponse(money)
+    return HttpResponse('0')
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        subject = request.POST['subject']
+        message = request.POST['message']
+        Contact.objects.create(name=name, email=email, subject=subject, message=message)
+        return JsonResponse('1', safe=False)
+    else:
+        return JsonResponse('0', safe=False)
+
+# 测试函数
+# walletpassphrase getreceivedbyaddress
 def bitcoinrpc(request):
     rpc_connection = AuthServiceProxy(
         "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
                                     django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
-    user = User.objects.get(id=request.user.id)
-    useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
-    address = rpc_connection.getreceivedbyaddress("1JNMrZozmrC2T9TSWeJZhymWb6BuWBKMgH")
-    return JsonResponse(address,safe=False)
+    # user = User.objects.get(id=request.user.id)
+    # useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
+    address = rpc_connection.getreceivedbyaddress("1DKZqm1ZGXYPYVWRomoKts8ZWN1RhhADAj")
+    #address = rpc_connection.gettransaction()
+    return JsonResponse(address, safe=False)
 
 def test(request):
     result = UserAddress.objects.filter(uid=request.user.id)[:1]
-    return render(request,'test.html',{'dataList':result})
+    return render(request, 'test.html', {'dataList': result})

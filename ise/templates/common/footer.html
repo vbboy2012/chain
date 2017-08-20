@@ -98,8 +98,7 @@
             <div class="col-sm-10">
               <select class="form-control" name="type">
                   <option value="1">BTC</option>
-                  <option value="2">ETH</option>
-                  <option value="3">SEC</option>
+                  <option value="3">RIS</option>
               </select>
             </div>
           </div>
@@ -147,14 +146,14 @@
             <div class="col-sm-10">
               <input type="text" class="form-control" id="tbaddr" name="tbdz" disabled="true">
             <input type="hidden" name="tbtype">
-                <label class=" control-label"><span style="color: red;display: none;float: right" id="type-btc">BTC地址</span><span style="color: red;display: none;float: right" id="type-eth">ETH地址</span><span style="color: red;display: none;float: right" id="type-sec">SEC地址</span></label>
+                <label class=" control-label"><span style="color: red;display: none;float: right" id="type-btc">BTC地址</span><span style="color: red;display: none;float: right" id="type-sec">SEC地址</span></label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">提币数量:</label>
             <div class="col-sm-10">
               <input type="text" class="form-control" name="tbcount">
-              <label class=" control-label">可提现最大金额（含手续费）：<span style="color: red;display: none;float: right" id="balance-btc">BTC {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-eth">ETH {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-sec">SEC {% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
+              <label class=" control-label">可提现最大金额（含手续费）：<span style="color: red;display: none;float: right" id="balance-btc">BTC {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-sec">SEC {% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
             </div>
           </div>
            <div class="form-group">
@@ -201,7 +200,7 @@
             <label class="col-sm-2 control-label">锁定数额:</label>
             <div class="col-sm-10">
              <input type="text" class="form-control" name="money" id="ico-money">
-                <label class=" control-label">可用金额：<span style="color: red;display: none;float: right" id="balance-icobtc">BTC {% for data in czdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-icoeth">ETH {% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
+                <label class="control-label">可用金额：<span style="color: red;float: right" id="balance-icobtc">BTC {% for data in czdz%}{{ data.money }}{% endfor %}</span></label>
             </div>
           </div>
           <div class="form-group">
@@ -248,22 +247,14 @@
         }
         var icotype = $(this).attr('id');
         $("#icoStep").val(icotype);
-        var type = icotype.split("-");
-        if(type[0] == "step1") {
+        if(icotype == "step1") {
             $("#icotype").text("限额锁定");
-        } else if(type[0] == "step2"){
+        } else if(icotype == "step2"){
             $("#icotype").text("公募(第一阶段)");
-        } else if(type[0] == "step3"){
+        } else if(icotype == "step3"){
             $("#icotype").text("公募(第二阶段)");
-        } else if(type[0] == "step4"){
+        } else if(icotype == "step4"){
             $("#icotype").text("公募(第三阶段)");
-        }
-        if(type[1] == "btc"){
-            $("#balance-icobtc").css('display','block');
-            $("#balance-icoeth").css('display','none');
-        } else if(type[1] == "eth"){
-            $("#balance-icobtc").css('display','none');
-            $("#balance-icoeth").css('display','block');
         }
     })
 
@@ -272,28 +263,15 @@
         var type = $(this).parent().parent().find("td:eq(2)").text();
         if(type == 'BTC'){
             $("#balance-btc").css('display','block');
-            $("#balance-eth").css('display','none');
             $("#balance-sec").css('display','none');
             $("#type-btc").css('display','block');
-            $("#type-eth").css('display','none');
             $("#type-sec").css('display','none');
             $("input[name='tbfee']").attr("placeholder","网络手续费最低0.0005BTC");
             $("input[name='tbtype']").val("1");
-        } else if(type == "ETH"){
+        }  else if(type == "SEC"){
             $("#balance-btc").css('display','none');
-            $("#balance-eth").css('display','block');
-            $("#balance-sec").css('display','none');
-            $("#type-btc").css('display','none');
-            $("#type-eth").css('display','block');
-            $("#type-sec").css('display','none');
-            $("input[name='tbfee']").attr("placeholder","网络手续费最低0.01ETH");
-            $("input[name='tbtype']").val("2");
-        } else if(type == "SEC"){
-            $("#balance-btc").css('display','none');
-            $("#balance-eth").css('display','none');
             $("#balance-sec").css('display','block');
             $("#type-btc").css('display','none');
-            $("#type-eth").css('display','none');
             $("#type-sec").css('display','block');
             $("input[name='tbfee']").attr("placeholder","网络手续费最低0.01SEC");
             $("input[name='tbtype']").val("3");
@@ -557,12 +535,19 @@
     $("#icosubmit").click(function () {
         var money = $("#ico-money").val();
         if(money === ""){
-            alert("请填写锁定金额");
+            alert("请填写金额");
             return;
         }
         if(isNaN(money)){
             alert("金额不正确");
             return;
+        }
+        var icotype = $("#icoStep").val();
+        if(icotype == 'step1'){
+            if(money > 5 || money < 0.1){
+                alert("金额不在限额范围内");
+                return;
+            }
         }
         var data = $("#ico-form").serialize();
         $.ajax({
@@ -570,7 +555,6 @@
             url: "{% url 'icolock' %}",
             data: data,
             success: function (result) {
-                alert(result);
                 if (result == "1"){
                     alert("锁定成功");
                     location.href = '/';
@@ -582,6 +566,9 @@
                 }
                 else if(result == "4"){
                     alert("时间未到");
+                }
+                else if(result == "5"){
+                    alert("ICO已经结束");
                 }
                 else if(result == "0"){
                     alert("未知错误");
@@ -600,6 +587,40 @@
             success: function (result) {
                 if (result == "1"){
                     location.href = '/';
+                }
+                else if(result == "0"){
+                    location.href = '/';
+                }
+            },
+        });
+    })
+
+    $("#contact-send").click(function () {
+        var name = $("#contact-name").val();
+        var email = $("#contact-email").val();
+        var subject = $("#contact-subject").val();
+        var message = $("#contact-message").val();
+        if(name === "" || email === "" || subject == "" || message === ""){
+            alert("请填写完整信息");
+            return false;
+        }
+        var reg =  /^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/;
+        if (!reg.test(email)){
+            alert("邮箱格式不正确！");
+            return false;
+        }
+        var data = $("#contac-form").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'contact' %}",
+            data: data,
+            success: function (result) {
+                if (result == "1"){
+                    alert("提交成功");
+                    $("#contact-name").val("");
+                    $("#contact-email").val("");
+                    $("#contact-subject").val("");
+                    $("#contact-message").val("");
                 }
                 else if(result == "0"){
                     location.href = '/';

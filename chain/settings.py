@@ -26,7 +26,7 @@ SECRET_KEY = 'z)%bg9$v#)y9+!*oane2o3#0^8lurudx%nw5p)tm*7^l+ws&_u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 DOMAIN = 'http://127.0.0.1:8000'
 
@@ -124,7 +124,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'zh_hans'
+
 #LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'Asia/Shanghai'
@@ -151,8 +151,8 @@ LOCALE_PATHS = (
 STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.163.com'
-EMAIL_HOST_USER = 'vbboy2012@163.com'
-EMAIL_HOST_PASSWORD = 'z35580113'
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_HOST_USER = 'user@rischain.com'
+EMAIL_HOST_PASSWORD = 'Okfuckyou123'
 EMAIL_PORT = 25
 EMAIL_USE_TLS = False
