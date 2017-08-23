@@ -33,19 +33,21 @@ class Icolock(models.Model):
     uid = models.IntegerField()
     addr = models.CharField(max_length=50)
     type = models.IntegerField()  # 1 阶段类型
+    coin_type = models.IntegerField()  # 1 支持币种
     money = models.DecimalField(max_digits=20, decimal_places=8)
-    sec = models.DecimalField(max_digits=20, decimal_places=8)
+    ris = models.DecimalField(max_digits=20, decimal_places=8)
+    ok_ris = models.DecimalField(max_digits=20, decimal_places=8,default=0)
     create_time = models.DateTimeField('时间', default=timezone.now)
-    status = models.IntegerField('状态', default=0)  # 是否发放代币SEC 1，是，0否
+    status = models.IntegerField('状态', default=0)  # 1，成功，待解冻，2发放1/3，3发放2/3，4发放完成
 
 class Config(models.Model):
     title = models.CharField(max_length=50)
     btcRate = models.IntegerField('BTC兑换率', default=0)
     ethRate = models.IntegerField('ETH兑换率', default=0)
-    secCount = models.IntegerField('sec总量', default=0)
-    icoCount = models.IntegerField('sec已发量', default=0)
-    start_time = models.DateTimeField('开始时间',default=timezone.now)
-    end_time = models.DateTimeField('结束时间',default=timezone.now)
+    risCount = models.IntegerField('RIS总量', default=0)
+    icoCount = models.IntegerField('RIS已发量', default=0)
+    start_time = models.DateTimeField('开始时间', default=timezone.now)
+    end_time = models.DateTimeField('结束时间', default=timezone.now)
     isOpen = models.BooleanField(default=False)
 
 class Contact(models.Model):

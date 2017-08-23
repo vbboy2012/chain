@@ -32,8 +32,8 @@ DOMAIN = 'http://127.0.0.1:8000'
 
 BITCOIN_HOST = '106.14.155.141'
 BITCOIN_PORT = '8332'
-BITCOIN_USER = 'vbboy2012'
-BITCOIN_PASS = 'Okfuckyou123'
+BITCOIN_USER = 'jzb201788'
+BITCOIN_PASS = 'Zz35580113'
 
 
 # Application definition
@@ -135,10 +135,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-LANGUAGES = (
-    ('en', _('English')),
-    ('zh-hans', _('Simplified Chinese'))
-)
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
@@ -154,5 +150,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.exmail.qq.com'
 EMAIL_HOST_USER = 'user@rischain.com'
 EMAIL_HOST_PASSWORD = 'Okfuckyou123'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True

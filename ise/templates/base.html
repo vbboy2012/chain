@@ -29,7 +29,7 @@
              <h2>分享链</h2>
             <p>{% trans '一个面向全球的资源信息分享区块链应用平台，任何人或公司都可以分享自己的资源信息需求。如：汽车、设备、住房、办公室、知识、经验、生活服务、旅行...'%}</p>
           </div>
-          <a href="#jump2" class="btn btn-outline btn-lg"> 白皮书 </a></div>
+          <a href="http://pagerhk.oss-cn-hangzhou.aliyuncs.com/pdf/rischainwhitepager.pdf" class="btn btn-outline btn-lg"> 白皮书 </a></div>
       </div>
     </div>
   </div>
@@ -82,8 +82,13 @@
           </tr>
           <tr>
             <td>BTC账户</td>
-            <td>{% for data in czdz%}{{ data.addr }}{% endfor %}</td>
-            <td>余额：{% for data in czdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in czdz%}{{ data.frozen_num }}{% endfor %}</td>
+            <td>{% for data in btcczdz%}{{ data.addr }}{% endfor %}</td>
+            <td>余额：{% for data in btcczdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in btcczdz%}{{ data.frozen_num }}{% endfor %}</td>
+          </tr>
+          <tr>
+            <td>ETH账户</td>
+            <td>{% for data in ethczdz%}{{ data.addr }}{% endfor %}</td>
+            <td>余额：{% for data in ethczdz%}{{ data.money }}{% endfor %}&nbsp;冻结：{% for data in ethczdz%}{{ data.frozen_num }}{% endfor %}</td>
           </tr>
           <tr>
             <td>RIS账户</td>
@@ -112,7 +117,8 @@
     <div class="panel panel-default">
       <!-- Default panel contents -->
       <div class="panel-body">
-        <div class="alert alert-success" role="alert">BTC充值地址：{% for data in czdz%}{{ data.addr }}{% endfor %}</div>
+        <div class="alert alert-success" role="alert">BTC充值地址：{% for data in btcczdz%}{{ data.addr }}{% endfor %}</div>
+      <div class="alert alert-success" role="alert">ETH充值地址：{% for data in ethczdz%}{{ data.addr }}{% endfor %}</div>
       </div>
         <div class="panel-heading">充值记录</div>
         {% if czList %}
@@ -223,6 +229,57 @@
 			</div>
 		</div>
 	</div>
+    <div class="panel panel-danger">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion"
+				   href="#collapseFive">
+					ICO记录
+				</a>
+			</h4>
+		</div>
+		<div id="collapseFive" class="panel-collapse collapse">
+			<div class="panel-body">
+				<div class="bs-example" data-example-id="table-within-panel">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+        <div class="panel-heading">ICO记录</div>
+        {% if tbList %}
+      <!-- Table -->
+      <table class="table" style="text-align: left">
+        <thead>
+          <tr>
+            <th>参与时间</th>
+            <th>阶段</th>
+            <th>参与币种</th>
+            <th>参与数量</th>
+            <th>RIS数量</th>
+            <th>已发放</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for data in icoList%}
+            <tr>
+            <td>{{ data.create_time }}</td>
+            <td>{% if data.type == 1 %}私募{% elif data.type == 2 %}ICO锁定{% elif data.type == 3 %}公开ICO{% endif %}</td>
+            <td>{% if data.coin_type == 1 %}BTC{% elif data.coin_type == 2 %}ETH{% endif %}</td>
+            <td>{{ data.money }}</td>
+            <td>{{ data.ris }}</td>
+            <td>{{ data.ok_ris }}</td>
+            <td>{% if data.status == 1 %}成功(RIS待解冻){% elif data.status == 2 %}成功(RIS解冻1/3){% elif data.status == 3 %}成功(RIS解冻2/3){% elif data.status == 4 %}成功(RIS解冻100%){% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+            {% else %}
+            暂无记录
+            {% endif %}
+    </div>
+  </div>
+			</div>
+		</div>
+	</div>
 </div>
         </div>
             {% endif %}
@@ -242,7 +299,7 @@
       <div class="form-group">
         <div class="row">
           <div class="col-lg-6">
-            <input type="text" class="form-control" name="username" placeholder="Your email *">
+            <input type="text" class="form-control" id="user" name="username" placeholder="Your email *">
             <br class="gap-15"/>
             <input type="password" class="form-control" id="pass" name="password" placeholder="Your Password *">
               <br class="gap-15"/>
@@ -333,12 +390,12 @@
       <div class="col-lg-4 features">
         <h3>去中心化后的资源分配方式</h3>
         <p>传统的中间化机构平台，往往数据不是完全公开透明的、且资源被操控的可能性增加，直接导致用户的利益受损，没有得到最好的资源分配。</p>
-        <p>RISC区块链服务允许个人之间直接互联、共享和交易，省去了大量的中间机构服务环节。让资源信息供与求双方直接“对话”，进入真正的共享经济。</p>
+        <p>RISC区块链服务允许个人之间直接互联、分享和交易，省去了大量的中间机构服务环节。让资源信息供与求双方直接“对话”，进入真正的分享经济。</p>
       </div>
       <div class="col-lg-4 features">
         <h3>结合人工智能，打造去中心化的自治组织</h3>
-        <p>如何处理如此庞大的共享信息，由谁来负责处理，大数据是人工智能的基础，人工智能将为共享资源信息匹配提供最优质方案。</p>
-        <p>人工智能可以对大量的共享信息进行大数据分析，并根据用户之间的个人信息，行为，习惯等等，进行友好的资源分配。</p>
+        <p>如何处理如此庞大的分享信息，由谁来负责处理，大数据是人工智能的基础，人工智能将为分享资源信息匹配提供最优质方案。</p>
+        <p>人工智能可以对大量的分享信息进行大数据分析，并根据用户之间的个人信息，行为，习惯等等，进行友好的资源分配。</p>
       </div>
       <div class="col-lg-4 features">
         <h3>如何验证资源信息的安全有效性</h3>
@@ -366,7 +423,7 @@
       <div class="col-lg-6" style="text-align: left">
           <h2>代币介绍</h2>
           <p>RISC项目的代币名称是（RIS），代币总量1亿</p>
-          <p>RIS代币的作用：资源信息共享平台的代币，可想而知，它将作为各种资源信息交易之间的信任代币。</p>
+          <p>RIS代币的作用：资源信息分享链的代币，可想而知，它将作为各种资源信息交易之间的信任代币。</p>
           <p>RIS代币的分配：如下</p>
 
           <table class="table" style="text-align: left" id="tbdz-table">
@@ -387,8 +444,8 @@
           </tr>
         <tr>
             <td>私募投资人</td>
-            <td>5%</td>
-            <td>5,000,000</td>
+            <td>8%</td>
+            <td>8,000,000</td>
             <td>早期对分享链提供资金和技术支持的投资人和公司，我们予以分享币作为回报</td>
           </tr>
         <tr>
@@ -399,9 +456,9 @@
           </tr>
         <tr>
             <td>挖矿</td>
-            <td>35%</td>
-            <td>35,000,000</td>
-            <td>分享链正式上线后开始支持矿工加入挖矿，挖矿难度每4年减半，区块奖励60个/块</td>
+            <td>32%</td>
+            <td>32,000,000</td>
+            <td>分享链正式上线后，将开放挖矿，用于构建一个开放性的公链，挖矿难度4年减半，区块奖励60RIS/块</td>
           </tr>
         <tr>
             <td>研发团队基金</td>
@@ -432,7 +489,7 @@
           <div class="team_body">
             <h5>吴资龙</h5>
             <h6>分享链团队总监</h6>
-            <p>曾担任腾讯技术总监，毕业于四川大学。比特币早起投资人，2011年开始研究区块链技术并发表多篇论文。</p>
+            <p>曾担任腾讯技术总监，毕业于四川大学。比特币早期投资人，2011年开始研究区块链技术并发表多篇论文。</p>
           </div>
         </div>
       </div>
@@ -450,7 +507,7 @@
         <div class="team_item">
           <div class="img_block"><img alt="" src="{% static 'images/team/33.png' %}"></div>
           <div class="team_body">
-            <h5>梁兴力</h5>
+            <h5>蒋波</h5>
             <h6>架构师</h6>
             <p>曾任联想集团系统架构师，精通C++、JAVA、Python、Go语言、Ruby,2014年开始研究区块链技术。</p>
           </div>
@@ -520,7 +577,7 @@
         <p>A：RIS代币ICO公开发售预计在9月1号开始，具体以官网公告为准。在正式公开ICO之前7天，官网会提前开放ICO限额预售功能，目的是为了防止少数大户垄断行为，让更多的人公平的参与进来。</p>
         </br>
         <p>Q：ICO募集的资金将用于哪些范围？</p>
-        <p>A：RISC资源信息共享经济区块链网络的开发、共享经济项目的落地推广、海外业务的拓展与开发团队扩增，以及相关运营、法律、方案设计。</p></p>
+        <p>A：RISC资源信息分享链网络的开发、分享经济项目的落地推广、海外业务的拓展与开发团队扩增，以及相关运营、法律、方案设计。</p></p>
         </br>
 
     </div>
@@ -544,20 +601,21 @@
                         <input type="hidden" id="checkLogin" value="{% if request.user.is_authenticated %}1{% else %}0{% endif %}">
 					    <div class="timeline-content">
 							<span class="date">
-									<span class="day">25<sup>th</sup></span>
+									<span class="day">28日</span>
 									<span class="month">8月</span>
 									<span class="year">2017</span>
 								</span>
 							<h2 class="title">
-                                限额锁定
+                                私募阶段
                                 <div style="float: right">
                                  {% for c in icoConfig %}
                                     {% if c.id == 1 %}
                                         {% if c.isOpen %}
-                                            {% if c.icoCount >= c.secCount %}
+                                            {% if c.icoCount >= c.risCount %}
                                                 <a href="javascript:;" style="color: white;">已完成</a>
                                             {% else %}
-                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step1" data-toggle="modal" data-target="#icoModal">参与支持</a>&nbsp;
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step1-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step1-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
                                             {% endif %}
                                         {% else %}
                                             <a href="javascript:;" style="color: white;">未开放</a>
@@ -567,41 +625,33 @@
                                 </div>
                             </h2>
 							<p class="description">
-                                开始时间：2017-8-24 12:00:00<br>
+                                开始时间：2017-8-28 12:00:00<br>
                                 截止时间：2017-9-1  12:00:00<br>
-                                 目标额度：500BTC<br>
-                                限额大小：最小0.1BTC/最大5BTC<br>
+                                目标额度：300BTC<br>
+                                限额大小：BTC(1-20)/ETH(10-200)<br>
+                                兑换比例：1BTC(40000RIS) / 1ETH(3200RIS)<br>
                                 支持人数：{% for list in rateList %}{% if list.id == 1 %}{{ list.count }}{% endif %}{% endfor %}<br>
                             </p>
-                            <div class="progress" style="margin-top: 5px">
-                            {% for list in rateList %}
-                                {% if list.id == 1   %}
-                                  <div class="progress-bar" role="progressbar" aria-valuenow="{{ list.rate }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ list.rate }}%;">
-                                    {{ list.rate }}%
-                                  </div>
-                                {% endif %}
-                            {% endfor %}
-                            </div>
-
 						</div>
 					</div>
 
 				    <div class="timeline">
 					    <div class="timeline-content">
 						    <span class="date">
-									<span class="day">31<sup>th</sup></span>
-									<span class="month">8月</span>
+									<span class="day">1日</span>
+									<span class="month">9月</span>
 									<span class="year">2017</span>
 								</span>
-							<h2 class="title">公募阶段
+							<h2 class="title">ICO提前锁定阶段
                                 <div style="float: right">
                                 {% for c in icoConfig %}
                                     {% if c.id == 2 %}
                                         {% if c.isOpen %}
-                                            {% if c.icoCount >= c.secCount %}
+                                            {% if c.icoCount >= c.risCount %}
                                                 <a href="javascript:;" style="color: white;">已完成</a>
                                             {% else %}
-                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step2" data-toggle="modal" data-target="#icoModal">参与支持</a>&nbsp;
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step2-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step2-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
                                             {% endif %}
                                         {% else %}
                                             <a href="javascript:;" style="color: white;">未开放</a>
@@ -612,8 +662,45 @@
                             </h2>
 							<p class="description">
                                 开始时间：2017-9-1 12:00:00<br>
+                                截止时间：2017-9-5  12:00:00<br>
+                                限额大小：BTC(0.1-20)/ETH(1-200)<br>
+                                兑换比例：1BTC(28730RIS) / 1ETH(2300RIS)<br>
+                                支持人数：{% for list in rateList %}{% if list.id == 2 %}{{ list.count }}{% endif %}{% endfor %}<br>
+                            </p>
+						</div>
+					</div>
+
+                    <div class="timeline">
+					    <div class="timeline-content">
+						    <span class="date">
+									<span class="day">1日</span>
+									<span class="month">9月</span>
+									<span class="year">2017</span>
+								</span>
+							<h2 class="title">公开ICO阶段
+                                <div style="float: right">
+                                {% for c in icoConfig %}
+                                    {% if c.id == 2 %}
+                                        {% if c.isOpen %}
+                                            {% if c.icoCount >= c.risCount %}
+                                                <a href="javascript:;" style="color: white;">已完成</a>
+                                            {% else %}
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step3-btc" data-toggle="modal" data-target="#icoModal">BTC支持</a>&nbsp;
+                                                <a href="javascript:;" style="color: white;" name="ico-lock" id="step3-eth" data-toggle="modal" data-target="#icoModal">ETH支持</a>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="javascript:;" style="color: white;">未开放</a>
+                                        {% endif %}
+                                    {% endif %}
+                                 {% endfor %}
+                                </div>
+                            </h2>
+							<p class="description">
+                                开始时间：2017-9-5 12:00:00<br>
                                 截止时间：2017-9-30  12:00:00<br>
-                                目标额度：1000BTC<br>
+                                目标额度：1100BTC<br>
+                                限额大小：BTC(0.1-20)/ETH(1-200)<br>
+                                兑换比例：1BTC(22530RIS) / 1ETH(1818RIS)<br>
                                 支持人数：{% for list in rateList %}{% if list.id == 2 %}{{ list.count }}{% endif %}{% endfor %}<br>
                             </p>
                             <div class="progress" style="margin-top: 5px">
@@ -635,29 +722,145 @@
 
 </div>
 
+<div class="section type-1">
+  <div class="demo">
+      <div class="container">
+            <div class="section-headlines">
+            <h4>分享链发展历程</h4>
+        </div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="main-timeline">
+						<div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">12日</span>
+									<span class="month">5月</span>
+									<span class="year">2017</span>
+								</span>
+                                <h2 class="title">项目团队成立</h2>
+								<p class="description">2017年5月12号，项目团队成立，开始构想分享链架构。</p>
+							</div>
+						</div>
+
+                        <div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">初</span>
+									<span class="month">6月</span>
+									<span class="year">2017</span>
+								</span>
+								<h2 class="title">市场调研</h2>
+								<p class="description">2017年6月-7月，项目团队对分享经济市场进行调研，并与分享经济行业滴滴、摩拜、新环境房屋、知乎等公司进行探讨合作。</p>
+							</div>
+						</div>
+
+						<div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">25日</span>
+									<span class="month">8月</span>
+									<span class="year">2017</span>
+								</span>
+								<h2 class="title">分享链进入私募阶段</h2>
+								<p class="description">2017年8月25日，分享链进入私募阶段。</p>
+							</div>
+						</div>
+
+                        <div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">28日</span>
+									<span class="month">8月</span>
+									<span class="year">2017</span>
+								</span>
+								<h2 class="title">ICO提前锁定阶段</h2>
+								<p class="description">2017年8月28日，分享链进入ICO提前锁定阶段。</p>
+							</div>
+						</div>
+
+						<div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">1日</span>
+									<span class="month">9月</span>
+									<span class="year">2017</span>
+								</span>
+								<h2 class="title">公开ICO</h2>
+								<p class="description">2017年9月1日，分享链开始进行公开ICO。</p>
+							</div>
+						</div>
+
+						<div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">30日</span>
+									<span class="month">9月</span>
+									<span class="year">2017</span>
+								</span>
+								<h2 class="title">公开ICO结束</h2>
+								<p class="description">2017年9月30日，分享链公开ICO介绍，之后将在官网进行RIS代币分配。</p>
+							</div>
+						</div>
+
+                        <div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">中旬</span>
+									<span class="month">10月</span>
+									<span class="year">2017</span>
+								</span>
+								<h2 class="title">RIS代币上交易平台</h2>
+								<p class="description">2017年10月中旬，RIS代币将上国内交易平台，官网将开放提币功能。</p>
+							</div>
+						</div>
+
+                        <div class="timeline">
+							<div class="timeline-content">
+								<span class="date">
+									<span class="day">初</span>
+									<span class="month">5月</span>
+									<span class="year">2018</span>
+								</span>
+                                <h2 class="title">成立海外团队</h2>
+								<p class="description">分享链团队将成立海外团队，将分享链业务拓展到全球范围。</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
     <!-- Subscription -->
-<section class="section type-4 email-susbscription">
+<div id="jump7" class="jumper"></div>
 
-  <div class="container" style="text-align: center">
-    <div class="row">
-    <div class="col-lg-4">
-    	<img src="{% static 'images/qqq.jpg' %}" style="width: 40%">
-        <p>官方1群：635902703</p>
+<!-- Team -->
+<div class="section type-2">
+  <div class="container">
+    <div class="section-headlines">
+      <h4>合作伙伴</h4>
     </div>
-    <div class="col-lg-4">
-    	<img src="{% static 'images/webo.png' %}" style="width: 40%">
-        <p>官方微博</p>
+    <div class="pricing-plans row">
+        <div class="col-lg-3">
+        <img src="{% static 'images/hzhb1.png' %}">
+        </div>
+        <div class="col-lg-3">
+        <img src="{% static 'images/hzhb2.png' %}">
+        </div>
+        <div class="col-lg-3">
+        <img src="{% static 'images/hzhb3.png' %}">
+        </div>
+        <div class="col-lg-3">
+        <img src="{% static 'images/hzhb4.png' %}">
+        </div>
     </div>
-        <div class="col-lg-4" style="text-align: left">
-        <p>商务合作：business@rischain.com</p>
-        <p>客户支持：support@rischain.com</p>
-        <p>加入团队：team@rischain.com</p>
+    <!--end:.pricing-table-->
 
-    </div>
-
-    </div>
   </div>
-</section>
+</div>
 
 <div id="jump6" class="jumper"></div>
 
@@ -677,11 +880,11 @@
       <div class="form-group">
         <div class="row">
           <div class="col-lg-6">
-            <input type="text" class="form-control" id="contact-name" name="name" placeholder="你的名称 *">
+            <input type="text" class="form-control" id="contact-name" name="name" placeholder="您的名称 *">
             <br class="gap-15"/>
           </div>
           <div class="col-lg-6">
-            <input type="text" class="form-control" id="contact-email" name="email" placeholder="你的邮箱 *">
+            <input type="text" class="form-control" id="contact-email" name="email" placeholder="您的邮箱 *">
           </div>
         </div>
       </div>
@@ -696,7 +899,30 @@
 
   </div>
 </div>
+  </div>
+ </div>
 
+<section class="section type-4 email-susbscription">
+
+  <div class="container" style="text-align: center">
+    <div class="row">
+    <div class="col-lg-4">
+    	<img src="{% static 'images/qqq.jpg' %}" style="width: 40%">
+        <p>官方1群：635902703</p>
+    </div>
+    <div class="col-lg-4">
+    	<img src="{% static 'images/wechat.jpg' %}" style="width: 40%">
+        <p>官方微信</p>
+    </div>
+        <div class="col-lg-4" style="text-align: left">
+        <p>商务合作：business@rischain.com</p>
+        <p>客户支持：support@rischain.com</p>
+        <p>加入团队：team@rischain.com</p>
+    </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {% block footer %}

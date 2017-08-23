@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^getreceive/', ise_views.getreceive, name='getreceive'),
     url(r'^canceltibi/(\d+)/$', ise_views.canceltibi, name='canceltibi'),
     url(r'^icolock/', ise_views.icolock, name='icolock'),
+    url(r'^eth/', ise_views.eth, name='eth'),
     url(r'^autoico/(\d+)/$', ise_views.autoico, name='autoico'),
     url(r'^sendcode/', ise_views.sendcode, name='sendcode'),
     url(r'^activate/(?P<token>\w+.[-_\w]*\w+.[-_\w]*\w+)/$', ise_views.active_user, name='active_user'),
@@ -38,5 +39,5 @@ urlpatterns = [
     url(r'^login/', ise_views.login, name='login'),
     url(r'^logout/', ise_views.logout, name='logout'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^bozaiadmin/', admin.site.urls),
 ]

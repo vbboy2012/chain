@@ -11,18 +11,11 @@
       <div class="collapse navbar-collapse hidden-xs">
         <ul class="nav navbar-nav navbar-right">
           <li class="active"><a href="{% url 'index' %}">{% trans '主页'%}</a></li>
-          <li><a href="#jump1">{% trans '关于RISE'%}</a></li>
+          <li><a href="#jump1">{% trans '关于RISC'%}</a></li>
           <li><a href="#jump2">{% trans 'Token'%}</a></li>
           <li><a href="#jump3">{% trans '团队'%}</a></li>
           <li><a href="#jump4">{% trans 'FAQ'%}</a></li>
           <li><a href="#jump5">{% trans 'ICO'%}</a></li>
-          <li>
-              {% if LANGUAGE_CODE == "en" %}
-                  <a href="javascript:;" onclick="changeLang()"><img src="{% static 'images/cn.png' %}" width="35%"/>CN</a>
-              {% elif LANGUAGE_CODE == "zh-hans" %}
-                  <a href="javascript:;" onclick="changeLang()"><img src="{% static 'images/en.png' %}" width="35%"/>EN</a>
-              {% endif %}
-          </li>
           {% if request.user.is_authenticated %}
               <li><a href="#" onclick="logout()">[{{ request.user.username }}]{% trans '退出'%}</a></li>
             {% else %}

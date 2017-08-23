@@ -1060,6 +1060,22 @@ label {
 		.main-timeline .timeline:nth-child(4) .title:after{
 		    background: #eab715;
 		}
+        .main-timeline .timeline:nth-child(5) .title,
+		.main-timeline .timeline:nth-child(5) .title:after{
+		    background: #9f84c4;
+		}
+        .main-timeline .timeline:nth-child(6) .title,
+		.main-timeline .timeline:nth-child(6) .title:after{
+		    background: #02a2dd;
+		}
+        .main-timeline .timeline:nth-child(7) .title,
+		.main-timeline .timeline:nth-child(7) .title:after{
+		    background: #58b25e;
+		}
+        .main-timeline .timeline:nth-child(8) .title,
+		.main-timeline .timeline:nth-child(8) .title:after{
+		    background: #eab715;
+		}
 		@media only screen and (max-width: 990px){
 		    .main-timeline{ width: 100%; }
 		}
