@@ -34,7 +34,6 @@ urlpatterns = [
     url(r'^autoico/(\d+)/$', ise_views.autoico, name='autoico'),
     url(r'^sendcode/', ise_views.sendcode, name='sendcode'),
     url(r'^activate/(?P<token>\w+.[-_\w]*\w+.[-_\w]*\w+)/$', ise_views.active_user, name='active_user'),
-    url(r'^test/', ise_views.test, name='test'),
     url(r'^bitcoinrpc/', ise_views.bitcoinrpc, name='bitcoinrpc'),
     url(r'^login/', ise_views.login, name='login'),
     url(r'^logout/', ise_views.logout, name='logout'),

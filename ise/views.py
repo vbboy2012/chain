@@ -399,13 +399,13 @@ def contact(request):
 # 测试函数
 # walletpassphrase getreceivedbyaddress
 def bitcoinrpc(request):
-    rpc_connection = AuthServiceProxy(
-        "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
-                                    django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
-    # user = User.objects.get(id=request.user.id)
-    # useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
-    address = rpc_connection.getreceivedbyaddress("1DKZqm1ZGXYPYVWRomoKts8ZWN1RhhADAj")
-    #address = rpc_connection.gettransaction()
+    # rpc_connection = AuthServiceProxy(
+    #     "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+    #                                 django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+    # # user = User.objects.get(id=request.user.id)
+    # # useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
+    # address = rpc_connection.getreceivedbyaddress("1DKZqm1ZGXYPYVWRomoKts8ZWN1RhhADAj")
+    # #address = rpc_connection.gettransaction()
     return JsonResponse(address, safe=False)
 
 def eth(request):
@@ -419,8 +419,5 @@ def eth(request):
     }
     response = requests.post(
         url, data=json.dumps(payload), headers=headers).json()
-    return JsonResponse(response, safe=False)
 
-def test(request):
-    result = UserAddress.objects.filter(uid=request.user.id)[:1]
-    return render(request, 'test.html', {'dataList': result})
+    return JsonResponse(response['result'], safe=False)
