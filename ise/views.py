@@ -15,6 +15,59 @@ from email.utils import formataddr
 token_confirm = Token(django_settings.SECRET_KEY)
 def index(request):
     if request.user.is_authenticated:
+        #检测充值
+        useraddress = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)
+        for addr in useraddress:
+            if addr.type == 1:  # 检测BTC钱包充值情况
+                rpc_connection = AuthServiceProxy(
+                    "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+                                                django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+                allReceive = rpc_connection.getreceivedbyaddress(addr.addr)
+                if allReceive > 0:
+                    alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1)
+                    count = 0
+                    for log in alllog:
+                        count += log.money
+                    money = allReceive - count
+                    if money > 0:
+                        CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, coin_type=1, money=money, fee=0)
+                # 对比3次网络确认的BTC数量，予以确认
+                threeOK = rpc_connection.getreceivedbyaddress(addr.addr, 3)
+                if threeOK > 0:
+                    alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1).filter(status=0)
+                    count = 0
+                    for log in alllog:
+                        count += log.money
+                    if threeOK == count:
+                        for log in alllog:
+                            log.status = 1
+                            log.save()
+                            addr.money += log.money
+                            addr.save()
+            elif addr.type == 2:  # 检测ETH
+                url = 'http://106.14.196.162:8828'
+                headers = {'content-type': 'application/json'}
+                payload = {
+                    "method": "eth_getBalance",
+                    "params": [addr.addr, 'latest'],
+                    "jsonrpc": "2.0",
+                    "id": 0,
+                }
+                response = requests.post(
+                    url, data=json.dumps(payload), headers=headers).json()
+                wei = int(response['result'], 16)
+                if wei > 0:
+                    wei = wei / 1000 / 1000 / 1000 / 1000 / 1000 / 1000
+                    alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1)
+                    count = 0
+                    for log in alllog:
+                        count += log.money
+                    money = wei - float(count)
+                    if money > 0:
+                        CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, coin_type=2,money=money, fee=0, status=1)
+                        addr.money += decimal.Decimal(money)
+                        addr.save()
+        #查询用户资料
         btcczdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1).filter(type=1)[:1]
         ethczdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1).filter(type=2)[:1]
         risczdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1).filter(type=3)[:1]
@@ -166,6 +219,7 @@ def tibi(request):
         pass2 = request.POST['tbpass2']
         user = User.objects.get(id=request.user.id)
         code = request.POST['tbcode']
+        type = request.POST['tbtype']
         try:
             tbcode = request.session['tbcode']
         except KeyError:
@@ -177,7 +231,7 @@ def tibi(request):
             #查询账号余额
             tbcount = float(request.POST['tbcount'])
             tbfee = float(request.POST['tbfee'])
-            czdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)[:1]
+            czdz = UserAddress.objects.filter(uid=request.user.id).filter(yt=1).filter(type=type)
             balance = 0
             user_addr = ''
             for dz in czdz:
@@ -193,22 +247,23 @@ def tibi(request):
                 useraddress.money = balance-(tbcount+tbfee)
                 useraddress.frozen_num = tbcount+tbfee
                 useraddress.save()
-                CoinLog.objects.create(uid=request.user.id, addr=tbdz, type=2, money=tbcount, fee=tbfee)
+                CoinLog.objects.create(uid=request.user.id, addr=tbdz, type=2, coin_type=type,money=tbcount, fee=tbfee)
                 return JsonResponse('1', safe=False)
         else:
             return JsonResponse('2', safe=False)
     else:
         return JsonResponse('0', safe=False)
 
-def canceltibi(request,id):
+def canceltibi(request,id,type):
     if request.user.is_authenticated:
         id = int(id)
+        type = int(type)
         coinlog = CoinLog.objects.get(id=id, uid=request.user.id)
         logmoney = coinlog.money
         logfee = coinlog.fee
         coinlog.status = 2
         coinlog.save()
-        useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
+        useraddress = UserAddress.objects.get(uid=request.user.id,type=type,yt=1)
         freenum = logmoney + logfee
         useraddress.money += freenum
         useraddress.frozen_num -= freenum
@@ -296,39 +351,61 @@ def changepass(request):
         return JsonResponse('0', safe=False)
 
 def getreceive(request):
-    rpc_connection = AuthServiceProxy(
-        "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
-                                    django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
-    useraddress = UserAddress.objects.filter(yt=1)
-    for addr in useraddress:
-        if addr.type == 1:      #检测BTC钱包充值情况
-            allReceive = rpc_connection.getreceivedbyaddress(addr.addr)
-            if allReceive > 0:
-                alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1)
-                count = 0
-                for log in alllog:
-                    count += log.money
-                money = allReceive - count
-                if money > 0:
-                    CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, money=money, fee=0)
-                    return HttpResponse(money)
-                else:
-                    return HttpResponse(allReceive)
-            else:
-                return HttpResponse(addr.addr)
-        elif addr.type == 2:    #检测ETH
-            url = 'http://106.14.196.162:8828'
-            headers = {'content-type': 'application/json'}
-            payload = {
-                "method": "eth_getBalance",
-                "params": [addr.addr, 'latest'],
-                "jsonrpc": "2.0",
-                "id": 0,
-            }
-            allReceive = requests.post(
-                url, data=json.dumps(payload), headers=headers).json()
-            if allReceive['result'] > 0:
-                return JsonResponse('1', safe=False)
+    if request.method == 'POST' and request.user.is_authenticated:
+        useraddress = UserAddress.objects.filter(uid=request.user.id).filter(yt=1)
+        for addr in useraddress:
+            if addr.type == 1:      #检测BTC钱包充值情况
+                rpc_connection = AuthServiceProxy(
+                    "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+                                                django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+                allReceive = rpc_connection.getreceivedbyaddress(addr.addr)
+                if allReceive > 0:
+                    alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1)
+                    count = 0
+                    for log in alllog:
+                        count += log.money
+                    money = allReceive - count
+                    if money > 0:
+                        CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, coin_type=1,money=money, fee=0)
+                #对比3次网络确认的BTC数量，予以确认
+                threeOK = rpc_connection.getreceivedbyaddress(addr.addr, 3)
+                if threeOK > 0:
+                    alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1).filter(status=0)
+                    count = 0
+                    for log in alllog:
+                        count += log.money
+                    if threeOK == count:
+                        for log in alllog:
+                            log.status = 1
+                            log.save()
+                            addr.money += log.money
+                            addr.save()
+            elif addr.type == 2:    #检测ETH
+                url = 'http://106.14.196.162:8828'
+                headers = {'content-type': 'application/json'}
+                payload = {
+                    "method": "eth_getBalance",
+                    "params": [addr.addr, 'latest'],
+                    "jsonrpc": "2.0",
+                    "id": 0,
+                }
+                response = requests.post(
+                    url, data=json.dumps(payload), headers=headers).json()
+                wei = int(response['result'], 16)
+                if wei > 0:
+                    wei = wei / 1000 / 1000 / 1000 / 1000 / 1000 / 1000
+                    alllog = CoinLog.objects.filter(addr=addr.addr).filter(type=1)
+                    count = 0
+                    for log in alllog:
+                        count += log.money
+                    money = wei - float(count)
+                    if money > 0:
+                        CoinLog.objects.create(uid=addr.uid, addr=addr.addr, type=1, coin_type=2,money=money, fee=0, status=1)
+                        addr.money += decimal.Decimal(money)
+                        addr.save()
+        return JsonResponse(count, safe=False)
+    else:
+        return JsonResponse('0', safe=False)
 
 
 def icolock(request):
@@ -366,7 +443,7 @@ def icolock(request):
                 ris = config.btcRate * money
             elif coin_type == 2:
                 ris = config.ethRate * money
-            Icolock.objects.create(uid=request.user.id, addr=useraddress.addr, type=config.id, coin_type=1, money=money, ris=ris,status=1)
+            Icolock.objects.create(uid=request.user.id, addr=useraddress.addr, type=config.id, coin_type=coin_type, money=money, ris=ris,status=1)
             config.icoCount += ris
             config.save()
             useraddress.money -= decimal.Decimal(money)
@@ -385,6 +462,7 @@ def autoico(request,type):
         config.save()
         return HttpResponse("random：" + str(money) + "--" + str(config.icoCount / config.risCount) + "%")
     return HttpResponse('0')
+
 def contact(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -399,13 +477,13 @@ def contact(request):
 # 测试函数
 # walletpassphrase getreceivedbyaddress
 def bitcoinrpc(request):
-    # rpc_connection = AuthServiceProxy(
-    #     "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
-    #                                 django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
-    # # user = User.objects.get(id=request.user.id)
-    # # useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
-    # address = rpc_connection.getreceivedbyaddress("1DKZqm1ZGXYPYVWRomoKts8ZWN1RhhADAj")
-    # #address = rpc_connection.gettransaction()
+    rpc_connection = AuthServiceProxy(
+        "http://{}:{}@{}:{}".format(django_settings.BITCOIN_USER, django_settings.BITCOIN_PASS,
+                                    django_settings.BITCOIN_HOST, django_settings.BITCOIN_PORT))
+    # user = User.objects.get(id=request.user.id)
+    # useraddress = UserAddress.objects.get(uid=request.user.id, yt=1)
+    address = rpc_connection.getreceivedbyaddress("115jcQWoGSEFf4xWcmsdj299wrULkEv4FQ")
+    #address = rpc_connection.gettransaction()
     return JsonResponse(address, safe=False)
 
 def eth(request):
@@ -413,11 +491,13 @@ def eth(request):
     headers = {'content-type': 'application/json'}
     payload = {
         "method": "eth_getBalance",
-        "params": ['0x4fe0d083152aade5ba34af1f2c0538182e284f9c','latest'],
+        "params": ['0xd9ecb2e8be0a4a8ae32677a04585cca438bd80eb', 'latest'],
         "jsonrpc": "2.0",
         "id": 0,
     }
     response = requests.post(
         url, data=json.dumps(payload), headers=headers).json()
-
-    return JsonResponse(response['result'], safe=False)
+    wei = int(response['result'], 16)
+    if wei > 0:
+       wei = wei / 1000 / 1000 / 1000 / 1000 / 1000 / 1000
+    return JsonResponse(response, safe=False)

@@ -153,7 +153,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">提币数量:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="tbcount">
+              <input type="text" class="form-control" name="tbcount" placeholder="">
               <label class=" control-label">可提现最大金额（含手续费）：<span style="color: red;display: none;float: right" id="balance-btc">BTC {% for data in btcczdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-eth">ETH {% for data in ethczdz%}{{ data.money }}{% endfor %}</span><span style="color: red;display: none;float: right" id="balance-sec">RIS {% for data in risczdz%}{{ data.money }}{% endfor %}</span></label>
             </div>
           </div>
@@ -225,6 +225,7 @@
 <script src="{% static 'scripts/mixitup/jquery.mixitup.min.js' %}"></script>
 <script src="{% static 'scripts/Chart.bundle.js' %}"></script>
 <script src="{% static 'scripts/theme.js' %}"></script>
+
 <script>
     $('.changesp').click(function () {
         $("#changeType").val("2");
@@ -275,7 +276,8 @@
             $("#type-btc").css('display','block');
             $("#type-eth").css('display','none');
             $("#type-sec").css('display','none');
-            $("input[name='tbfee']").attr("placeholder","网络手续费最低0.0005BTC");
+            $("input[name='tbcount']").attr("placeholder","最低提0.01");
+            $("input[name='tbfee']").attr("placeholder","网络手续费最低0.0009BTC");
             $("input[name='tbtype']").val("1");
         } else if(type == "ETH"){
             $("#balance-btc").css('display','none');
@@ -284,16 +286,18 @@
             $("#type-btc").css('display','none');
             $("#type-eth").css('display','block');
             $("#type-sec").css('display','none');
+            $("input[name='tbcount']").attr("placeholder","最低提0.1");
             $("input[name='tbfee']").attr("placeholder","网络手续费最低0.01ETH");
-            $("input[name='tbtype']").val("3");
+            $("input[name='tbtype']").val("2");
         }
-        else if(type == "SEC"){
+        else if(type == "RIS"){
             $("#balance-btc").css('display','none');
             $("#balance-eth").css('display','none');
             $("#balance-sec").css('display','block');
             $("#type-btc").css('display','none');
             $("#type-eth").css('display','none');
             $("#type-sec").css('display','block');
+            $("input[name='tbcount']").attr("placeholder","最低提0.1");
             $("input[name='tbfee']").attr("placeholder","网络手续费最低0.01RIS");
             $("input[name='tbtype']").val("3");
         }
@@ -517,8 +521,18 @@
             return;
         }
         var type = $("input[name='tbtype']").val();
-        if(type == 1 && fee < 0.0005){
-            alert("网络手续费最低0.0005");
+        if(type == 1 && count < 0.01){
+            alert("低于最低提币数量");
+            return;
+        }else if(type == 2 && count < 0.1){
+            alert("低于最低提币数量");
+            return;
+        }else if(type == 3 && count < 0.1){
+            alert("低于最低提币数量");
+            return;
+        }
+        if(type == 1 && fee < 0.0009){
+            alert("网络手续费最低0.0009");
             return;
         }else if(type == 2 && fee < 0.01){
             alert("网络手续费最低0.01");

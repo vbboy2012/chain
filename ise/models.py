@@ -12,7 +12,7 @@ class User(AbstractUser):
 
 class UserAddress(models.Model):
     uid = models.IntegerField()
-    type = models.IntegerField()    #1btc，2eth ，3SEC
+    type = models.IntegerField()    #1btc，2eth ，3RIS
     yt = models.IntegerField()      #1 充值地址 2 提币地址
     addr = models.CharField(max_length=50)
     money = models.DecimalField(max_digits=20, decimal_places=8)        #余额
@@ -24,6 +24,7 @@ class CoinLog(models.Model):
     uid = models.IntegerField()
     addr = models.CharField(max_length=50)
     type = models.IntegerField()    # 1 充值记录，2提现记录
+    coin_type = models.IntegerField()  # 币种 1BTC 2 ETH 3 RIS
     money = models.DecimalField(max_digits=20, decimal_places=8)
     fee = models.DecimalField(max_digits=20, decimal_places=8)
     create_time = models.DateTimeField('时间', default=timezone.now)

@@ -4,12 +4,15 @@ from .models import User, UserAddress, CoinLog, Icolock, Config, Contact
 
 class UserAddressAdmin(admin.ModelAdmin):
     list_display = ('uid', 'type', 'yt', 'addr', 'money', 'frozen_num','remark','status')
+    search_fields = ['type','yt','addr']
 
 class CoinLogAdmin(admin.ModelAdmin):
     list_display = ('uid', 'type', 'addr', 'money', 'fee', 'create_time', 'status')
+    search_fields = ['type','addr']
 
 class IcolockAdmin(admin.ModelAdmin):
     list_display = ('uid', 'type', 'addr', 'money', 'ris', 'create_time', 'status')
+    search_fields = ['uid','type','addr']
 
 class ConfigAdmin(admin.ModelAdmin):
     list_display = ('title', 'isOpen')

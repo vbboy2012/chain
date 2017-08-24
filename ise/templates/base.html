@@ -11,7 +11,7 @@
     <meta name="description" content="RISC是一个面向全球的资源信息共享经济体区块链网络，一个实现真正的对等交易和共享经济的平台，RISC的宗旨是让全民参与进来共同建设共享经济 2.0">
     {% include 'common/link.html' %}
 </head>
-<body id=body onscroll=SetCookie("scroll",body.scrollTop); onload="scrollback();">
+<body id=body>
 
 {% block header %}
 {% include 'common/header.html' %}
@@ -127,6 +127,7 @@
         <thead>
           <tr>
             <th>充值地址</th>
+            <th>充值类型</th>
             <th>充值金额</th>
             <th>更新时间</th>
             <th>充值状态</th>
@@ -136,9 +137,10 @@
         {% for data in czList%}
             <tr>
             <td>{{ data.addr }}</td>
+            <td>{% if data.coin_type == 1 %}BTC{% elif data.coin_type == 2 %}ETH{% endif %}</td>
             <td>{{ data.money }}</td>
             <td>{{ data.create_time }}</td>
-            <td>{% if data.status == 1 %}充值成功{% endif %}</td>
+            <td>{% if data.status == 0 %}等待确认{% elif data.status == 1 %}充值成功{% endif %}</td>
           </tr>
         {% endfor %}
         </tbody>
@@ -200,7 +202,8 @@
       <table class="table" style="text-align: left">
         <thead>
           <tr>
-            <th>提现时间</th>
+            <th>提币时间</th>
+            <th>提币类型</th>
             <th>提现金额</th>
             <th>网络手续费</th>
             <th>提现地址</th>
@@ -212,11 +215,12 @@
         {% for data in tbList%}
             <tr>
             <td>{{ data.create_time }}</td>
+            <td>{% if data.coin_type == 1 %}BTC{% elif data.coin_type == 2 %}ETH{% endif %}</td>
             <td>{{ data.money }}</td>
             <td>{{ data.fee }}</td>
             <td>{{ data.addr }}</td>
             <td>{% if data.status == 1 %}提币成功{% elif data.status == 0 %}审核中{% elif data.status == 2 %}已取消{% endif %}</td>
-            <td><input type="hidden" value="{{ data.id }}" id="ids">{% if data.status == 0 %}<a href="/canceltibi/{{ data.id }}/" class="cancel-tb">取消</a>{% endif %}</td>
+            <td><input type="hidden" value="{{ data.id }}" id="ids">{% if data.status == 0 %}<a href="/canceltibi/{{ data.id }}/{{ data.coin_type }}/" class="cancel-tb">取消</a>{% endif %}</td>
           </tr>
         {% endfor %}
         </tbody>
@@ -601,7 +605,7 @@
                         <input type="hidden" id="checkLogin" value="{% if request.user.is_authenticated %}1{% else %}0{% endif %}">
 					    <div class="timeline-content">
 							<span class="date">
-									<span class="day">28日</span>
+									<span class="day">25日</span>
 									<span class="month">8月</span>
 									<span class="year">2017</span>
 								</span>
@@ -625,9 +629,9 @@
                                 </div>
                             </h2>
 							<p class="description">
-                                开始时间：2017-8-28 12:00:00<br>
-                                截止时间：2017-9-1  12:00:00<br>
-                                目标额度：300BTC<br>
+                                开始时间：2017-8-25 12:00:00<br>
+                                截止时间：2017-8-30  12:00:00<br>
+                                目标额度：500BTC<br>
                                 限额大小：BTC(1-20)/ETH(10-200)<br>
                                 兑换比例：1BTC(40000RIS) / 1ETH(3200RIS)<br>
                                 支持人数：{% for list in rateList %}{% if list.id == 1 %}{{ list.count }}{% endif %}{% endfor %}<br>
@@ -662,7 +666,7 @@
                             </h2>
 							<p class="description">
                                 开始时间：2017-9-1 12:00:00<br>
-                                截止时间：2017-9-5  12:00:00<br>
+                                截止时间：2017-9-7  12:00:00<br>
                                 限额大小：BTC(0.1-20)/ETH(1-200)<br>
                                 兑换比例：1BTC(28730RIS) / 1ETH(2300RIS)<br>
                                 支持人数：{% for list in rateList %}{% if list.id == 2 %}{{ list.count }}{% endif %}{% endfor %}<br>
@@ -673,7 +677,7 @@
                     <div class="timeline">
 					    <div class="timeline-content">
 						    <span class="date">
-									<span class="day">1日</span>
+									<span class="day">8日</span>
 									<span class="month">9月</span>
 									<span class="year">2017</span>
 								</span>
@@ -696,8 +700,8 @@
                                 </div>
                             </h2>
 							<p class="description">
-                                开始时间：2017-9-5 12:00:00<br>
-                                截止时间：2017-9-30  12:00:00<br>
+                                开始时间：2017-9-8 12:00:00<br>
+                                截止时间：2017-10-8  12:00:00<br>
                                 目标额度：1100BTC<br>
                                 限额大小：BTC(0.1-20)/ETH(1-200)<br>
                                 兑换比例：1BTC(22530RIS) / 1ETH(1818RIS)<br>
