@@ -639,6 +639,7 @@
     });
 
     $("#show-info").click(function () {
+        $(this).attr("disabled","disabled");
         $.ajax({
             type: 'POST',
             url: "{% url 'showinfo' %}",

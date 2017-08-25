@@ -434,21 +434,22 @@ def icolock(request):
             coin_type = 2
 
         money = float(request.POST['money'])
-        useraddress = UserAddress.objects.get(uid=request.user.id, type=coin_type, yt=1)
-        if money > useraddress.money:  # 可用资金不足
-            return JsonResponse('3', safe=False)
-        else:
-            # 进入ICO环节
-            if coin_type == 1:
-                ris = config.btcRate * money
-            elif coin_type == 2:
-                ris = config.ethRate * money
-            Icolock.objects.create(uid=request.user.id, addr=useraddress.addr, type=config.id, coin_type=coin_type, money=money, ris=ris,status=1)
-            config.icoCount += ris
-            config.save()
-            useraddress.money -= decimal.Decimal(money)
-            useraddress.save()
-            return JsonResponse("1", safe=False)
+        useraddress = UserAddress.objects.filter(uid=request.user.id).filter(type=coin_type).filter(yt=1)[:1]
+        for useradd in useraddress:
+            if money > useradd.money:  # 可用资金不足
+                return JsonResponse('3', safe=False)
+            else:
+                # 进入ICO环节
+                if coin_type == 1:
+                    ris = config.btcRate * money
+                elif coin_type == 2:
+                    ris = config.ethRate * money
+                Icolock.objects.create(uid=request.user.id, addr=useradd.addr, type=config.id, coin_type=coin_type, money=money, ris=ris,status=1)
+                config.icoCount += ris
+                config.save()
+                useradd.money -= decimal.Decimal(money)
+                useradd.save()
+                return JsonResponse("1", safe=False)
     else:
         return JsonResponse('0', safe=False)
 
